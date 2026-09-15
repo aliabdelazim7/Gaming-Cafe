@@ -1,6 +1,9 @@
 {
-  " name\: \al5al-gaming-cafe\,
- \scripts\: {
- \build\: \npm --prefix frontend run build\
- }
+  "name": "al5al-gaming-cafe",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "start": "npm --prefix frontend run preview"
+  }
 }
