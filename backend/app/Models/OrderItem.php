@@ -20,8 +20,8 @@ class OrderItem extends Model
 
     protected $casts = [
         'quantity' => 'integer',
-        'unit_price' => 'decimal:2',
-        'subtotal' => 'decimal:2',
+        'unit_price' => 'float',
+        'subtotal' => 'float',
     ];
 
     public function order()

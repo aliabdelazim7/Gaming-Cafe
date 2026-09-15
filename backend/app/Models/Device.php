@@ -22,7 +22,7 @@ class Device extends Model
     ];
 
     protected $casts = [
-        'hourly_rate' => 'decimal:2',
+        'hourly_rate' => 'float',
     ];
 
     public function sessions()

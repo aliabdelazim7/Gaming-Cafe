@@ -32,12 +32,12 @@ class DeviceSession extends Model
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
-        'hourly_rate' => 'decimal:2',
-        'session_cost' => 'decimal:2',
-        'beverage_cost' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'total_amount' => 'decimal:2',
-        'paid_amount' => 'decimal:2',
+        'hourly_rate' => 'float',
+        'session_cost' => 'float',
+        'beverage_cost' => 'float',
+        'discount' => 'float',
+        'total_amount' => 'float',
+        'paid_amount' => 'float',
     ];
 
     public function device()

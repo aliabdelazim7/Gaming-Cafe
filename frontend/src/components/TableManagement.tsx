@@ -13,6 +13,7 @@ import {
 import { Device, Table } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { sounds } from '../utils/audio';
+import { formatMoney } from '../utils/format';
 
 interface TableManagementProps {
   lang: Language;
@@ -150,8 +151,8 @@ export const TableManagement: React.FC<TableManagementProps> = ({
                     <span className="text-slate-400 font-medium">
                       {table.order.items_count} items
                     </span>
-                    <span className="font-bold text-amber-400 font-mono">
-                      {table.total_spent.toFixed(2)} {t.currency}
+                    <span className="font-bold text-amber-400 font-mono" dir="ltr">
+                      {formatMoney(table.total_spent)} {t.currency}
                     </span>
                   </>
                 ) : (
@@ -212,8 +213,8 @@ export const TableManagement: React.FC<TableManagementProps> = ({
                         <span className="text-slate-200">
                           {it.quantity}x {lang === 'ar' ? it.name_ar : it.name}
                         </span>
-                        <span className="font-mono text-amber-400 font-bold">
-                          {it.subtotal.toFixed(2)} {t.currency}
+                        <span className="font-mono text-amber-400 font-bold" dir="ltr">
+                          {formatMoney(it.subtotal)} {t.currency}
                         </span>
                       </div>
                     ))}
@@ -221,8 +222,8 @@ export const TableManagement: React.FC<TableManagementProps> = ({
 
                   <div className="pt-2 border-t border-border flex justify-between text-sm font-black text-white">
                     <span>{t.total}:</span>
-                    <span className="font-mono text-emerald-400">
-                      {selectedTable.total_spent.toFixed(2)} {t.currency}
+                    <span className="font-mono text-emerald-400" dir="ltr">
+                      {formatMoney(selectedTable.total_spent)} {t.currency}
                     </span>
                   </div>
 
@@ -306,8 +307,8 @@ export const TableManagement: React.FC<TableManagementProps> = ({
 
               <div className="p-3 rounded-xl bg-surface border border-border text-xs flex justify-between items-center">
                 <span className="text-slate-400">Current Table Bill:</span>
-                <span className="font-mono font-bold text-amber-400 text-sm">
-                  {moveModalTable.total_spent.toFixed(2)} {t.currency}
+                <span className="font-mono font-bold text-amber-400 text-sm" dir="ltr">
+                  {formatMoney(moveModalTable.total_spent)} {t.currency}
                 </span>
               </div>
 
@@ -329,7 +330,7 @@ export const TableManagement: React.FC<TableManagementProps> = ({
                     <option value="">-- Choose Gamer / Station --</option>
                     {activeStations.map((st) => (
                       <option key={st.active_session!.id} value={st.active_session!.id}>
-                        {st.device_name} ({st.active_session!.customer_name}) - Current Tab: {st.active_session!.total_amount.toFixed(2)} {t.currency}
+                        {st.device_name} ({st.active_session!.customer_name}) - Current Tab: {formatMoney(st.active_session?.total_amount)} {t.currency}
                       </option>
                     ))}
                   </select>

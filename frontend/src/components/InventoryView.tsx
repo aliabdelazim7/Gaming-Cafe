@@ -13,6 +13,7 @@ import {
 import { Product } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { api } from '../services/api';
+import { formatMoney } from '../utils/format';
 
 interface InventoryViewProps {
   lang: Language;
@@ -128,8 +129,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         {prod.category}
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-mono font-bold text-amber-400">
-                      {prod.price.toFixed(2)} {t.currency}
+                    <td className="py-3 px-3 font-mono font-bold text-amber-400" dir="ltr">
+                      {formatMoney(prod.price)} {t.currency}
                     </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-1.5 font-mono font-bold text-xs">

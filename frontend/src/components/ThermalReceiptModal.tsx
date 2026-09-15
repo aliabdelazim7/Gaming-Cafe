@@ -2,6 +2,7 @@ import React from 'react';
 import { Printer, X, Check, Copy } from 'lucide-react';
 import { ThermalReceipt } from '../types';
 import { Language, translations } from '../i18n/translations';
+import { formatMoney, safeNum } from '../utils/format';
 
 interface ThermalReceiptModalProps {
   lang: Language;
@@ -97,9 +98,9 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({
                   <div key={idx} className="pt-1">
                     <div className="font-bold text-[11px]">{item.name}</div>
                     {item.name_ar && <div className="text-[9px] text-gray-600">{item.name_ar}</div>}
-                    <div className="flex justify-between text-[10px] text-gray-600">
-                      <span>{item.quantity} x {item.unit_price.toFixed(2)}</span>
-                      <span className="font-bold text-black">{item.subtotal.toFixed(2)} SAR</span>
+                    <div className="flex justify-between text-[10px] text-gray-600 font-mono">
+                      <span>{item.quantity} x {formatMoney(item.unit_price)}</span>
+                      <span className="font-bold text-black">{formatMoney(item.subtotal)} SAR</span>
                     </div>
                   </div>
                 ))}
@@ -107,24 +108,24 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({
             </div>
 
             {/* Totals */}
-            <div className="py-2.5 border-b border-dashed border-gray-400 space-y-1 text-[11px]">
+            <div className="py-2.5 border-b border-dashed border-gray-400 space-y-1 text-[11px] font-mono">
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>{receipt.subtotal.toFixed(2)} SAR</span>
+                <span>{formatMoney(receipt.subtotal)} SAR</span>
               </div>
-              {receipt.discount > 0 && (
+              {safeNum(receipt.discount) > 0 && (
                 <div className="flex justify-between text-red-600 font-bold">
                   <span>Discount:</span>
-                  <span>-{receipt.discount.toFixed(2)} SAR</span>
+                  <span>-{formatMoney(receipt.discount)} SAR</span>
                 </div>
               )}
               <div className="flex justify-between text-gray-600 text-[10px]">
                 <span>VAT (Included 15%):</span>
-                <span>{((receipt.total_amount * 15) / 115).toFixed(2)} SAR</span>
+                <span>{formatMoney((safeNum(receipt.total_amount) * 15) / 115)} SAR</span>
               </div>
-              <div className="flex justify-between text-base font-black pt-1 border-t border-gray-400">
+              <div className="flex justify-between text-base font-black pt-1 border-t border-gray-400 font-mono">
                 <span>TOTAL:</span>
-                <span>{receipt.total_amount.toFixed(2)} SAR</span>
+                <span>{formatMoney(receipt.total_amount)} SAR</span>
               </div>
               <div className="flex justify-between text-[10px] text-gray-600">
                 <span>Payment:</span>

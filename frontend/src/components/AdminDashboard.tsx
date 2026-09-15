@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Language, translations } from '../i18n/translations';
 import { api } from '../services/api';
+import { formatMoney, safeNum } from '../utils/format';
 
 interface AdminDashboardProps {
   lang: Language;
@@ -55,9 +56,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
   }
 
   const metrics = dashboardData.metrics;
-  const totalRevenue = metrics.total_revenue_today || 0;
-  const cafePct = totalRevenue > 0 ? ((metrics.cafe_revenue_today / totalRevenue) * 100).toFixed(0) : '0';
-  const gamingPct = totalRevenue > 0 ? ((metrics.gaming_revenue_today / totalRevenue) * 100).toFixed(0) : '0';
+  const totalRevenue = safeNum(metrics?.total_revenue_today);
+  const cafePct = totalRevenue > 0 ? ((safeNum(metrics?.cafe_revenue_today) / totalRevenue) * 100).toFixed(0) : '0';
+  const gamingPct = totalRevenue > 0 ? ((safeNum(metrics?.gaming_revenue_today) / totalRevenue) * 100).toFixed(0) : '0';
 
   return (
     <div className="space-y-6">
@@ -88,13 +89,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
             <span>{t.todayRevenue}</span>
             <DollarSign className="w-4 h-4 text-emerald-400" />
           </div>
-          <p className="text-2xl font-black font-mono text-emerald-400">
-            {metrics.total_revenue_today.toFixed(2)} {t.currency}
+          <p className="text-2xl font-black font-mono text-emerald-400" dir="ltr">
+            {formatMoney(metrics?.total_revenue_today)} {t.currency}
           </p>
-          <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-400">
-            <span className="text-amber-400">Cash: {metrics.cash_total.toFixed(2)}</span>
+          <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-400 font-mono" dir="ltr">
+            <span className="text-amber-400">Cash: {formatMoney(metrics?.cash_total)}</span>
             <span>•</span>
-            <span className="text-cyan-400">Card: {metrics.card_total.toFixed(2)}</span>
+            <span className="text-cyan-400">Card: {formatMoney(metrics?.card_total)}</span>
           </div>
         </div>
 
@@ -103,8 +104,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
             <span>{t.cafeSales}</span>
             <Coffee className="w-4 h-4 text-amber-400" />
           </div>
-          <p className="text-2xl font-black font-mono text-amber-300">
-            {metrics.cafe_revenue_today.toFixed(2)} {t.currency}
+          <p className="text-2xl font-black font-mono text-amber-300" dir="ltr">
+            {formatMoney(metrics?.cafe_revenue_today)} {t.currency}
           </p>
           <div className="w-full bg-surface h-1.5 rounded-full mt-3 overflow-hidden">
             <div className="bg-amber-400 h-full rounded-full" style={{ width: `${cafePct}%` }} />
@@ -116,8 +117,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
             <span>{t.gamingSales}</span>
             <Gamepad2 className="w-4 h-4 text-purple-400" />
           </div>
-          <p className="text-2xl font-black font-mono text-purple-300">
-            {metrics.gaming_revenue_today.toFixed(2)} {t.currency}
+          <p className="text-2xl font-black font-mono text-purple-300" dir="ltr">
+            {formatMoney(metrics?.gaming_revenue_today)} {t.currency}
           </p>
           <div className="w-full bg-surface h-1.5 rounded-full mt-3 overflow-hidden">
             <div className="bg-purple-500 h-full rounded-full" style={{ width: `${gamingPct}%` }} />
@@ -170,8 +171,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
 
               return (
                 <div key={day.date} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                  <span className="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition">
-                    {day.total_revenue.toFixed(0)}
+                  <span className="text-[10px] font-mono text-slate-400 opacity-0 group-hover:opacity-100 transition" dir="ltr">
+                    {safeNum(day.total_revenue).toFixed(0)}
                   </span>
                   <div className="w-full max-w-[32px] flex flex-col rounded-t-lg overflow-hidden bg-surface">
                     <div
@@ -217,8 +218,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ lang }) => {
                     </p>
                   </div>
                 </div>
-                <span className="font-mono font-bold text-xs text-emerald-400">
-                  {parseFloat(item.total_sales).toFixed(2)} {t.currency}
+                <span className="font-mono font-bold text-xs text-emerald-400" dir="ltr">
+                  {formatMoney(item.total_sales)} {t.currency}
                 </span>
               </div>
             ))}

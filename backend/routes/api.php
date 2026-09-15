@@ -12,6 +12,28 @@ use App\Http\Controllers\Api\TableController;
 use Illuminate\Support\Facades\Route;
 
 $apiRoutes = function () {
+    // API Root & Health Check
+    Route::get('/', function () {
+        return response()->json([
+            'system' => 'Nexus Gaming Cafe & Coffee Shop Management System',
+            'system_ar' => 'نظام إدارة صالات الألعاب والكافيه - نكسس',
+            'status' => 'online',
+            'version' => '1.0.0',
+            'frontend_url' => 'http://localhost:5173',
+            'endpoints' => [
+                'devices' => '/api/devices',
+                'orders' => '/api/orders',
+                'tables' => '/api/tables',
+                'products' => '/api/products',
+                'shifts' => '/api/shifts/current',
+                'notifications' => '/api/notifications',
+                'reports' => '/api/reports/dashboard',
+            ],
+            'message' => 'API is running successfully. Please open http://localhost:5173 to access the POS dashboard.',
+            'message_ar' => 'واجهة برمجة التطبيقات تعمل بنجاح. يرجى فتح الرابط http://localhost:5173 للوصول للوحة التحكم ونقطة البيع.',
+        ]);
+    });
+
     // 1. Authentication
     Route::post('/auth/login', [AuthController::class, 'login']);
     Route::get('/auth/user', [AuthController::class, 'user']);
@@ -34,6 +56,7 @@ $apiRoutes = function () {
 
     Route::post('/devices/{id}/session/start', [SessionController::class, 'start']);
     Route::post('/devices/{id}/start-session', [SessionController::class, 'start']);
+    Route::post('/devices/{id}/start', [SessionController::class, 'start']);
     Route::patch('/sessions/{id}/extend', [SessionController::class, 'extend']);
     Route::patch('/sessions/{id}/extend-time', [SessionController::class, 'extend']);
     Route::patch('/sessions/{id}/add-beverage', [SessionController::class, 'addBeverage']);

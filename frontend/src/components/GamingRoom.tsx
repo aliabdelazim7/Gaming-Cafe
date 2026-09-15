@@ -20,6 +20,7 @@ import {
 import { Device, Product, ThermalReceipt } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { sounds } from '../utils/audio';
+import { formatSeconds, safeNum, formatMoney } from '../utils/format';
 
 interface GamingRoomProps {
   lang: Language;
@@ -82,6 +83,9 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
     return matchesRoom && matchesSearch;
   });
 
+  // Track triggered alerts so sound only plays once per session threshold
+  const alertedRef = React.useRef<{ [alertKey: string]: boolean }>({});
+
   // Local seconds ticking for active devices
   const [countdowns, setCountdowns] = useState<{ [deviceId: number]: number }>({});
 
@@ -89,7 +93,7 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
     const initialCounts: { [deviceId: number]: number } = {};
     devices.forEach((d) => {
       if (d.active_session) {
-        initialCounts[d.id] = d.active_session.remaining_seconds;
+        initialCounts[d.id] = Math.max(0, Math.floor(safeNum(d.active_session.remaining_seconds)));
       }
     });
     setCountdowns(initialCounts);
@@ -97,30 +101,31 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
     const timer = setInterval(() => {
       setCountdowns((prev) => {
         const next: { [deviceId: number]: number } = { ...prev };
-        let triggerRefresh = false;
 
         devices.forEach((d) => {
-          if (d.active_session && next[d.id] !== undefined) {
-            const current = next[d.id];
+          if (d.active_session) {
+            const current = next[d.id] !== undefined ? next[d.id] : Math.max(0, Math.floor(safeNum(d.active_session.remaining_seconds)));
             if (current > 0) {
-              next[d.id] = current - 1;
+              const updated = current - 1;
+              next[d.id] = updated;
 
-              // Check audio warnings
-              if (current === 600) {
+              const sId = d.active_session.id;
+              // Check audio warnings (only once per threshold)
+              if (updated <= 600 && updated > 595 && !alertedRef.current[`10m-${sId}`]) {
+                alertedRef.current[`10m-${sId}`] = true;
                 sounds.playWarning10Min();
-              } else if (current === 300) {
+              } else if (updated <= 300 && updated > 295 && !alertedRef.current[`5m-${sId}`]) {
+                alertedRef.current[`5m-${sId}`] = true;
                 sounds.playWarning5Min();
-              } else if (current === 1) {
+              } else if (updated <= 0 && !alertedRef.current[`0m-${sId}`]) {
+                alertedRef.current[`0m-${sId}`] = true;
                 sounds.playSessionEnded();
-                triggerRefresh = true;
               }
+            } else {
+              next[d.id] = 0;
             }
           }
         });
-
-        if (triggerRefresh) {
-          onRefresh();
-        }
 
         return next;
       });
@@ -129,13 +134,8 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
     return () => clearInterval(timer);
   }, [devices]);
 
-  // Format seconds to HH:MM:SS
   const formatTime = (totalSeconds: number) => {
-    if (totalSeconds <= 0) return '00:00:00';
-    const hrs = Math.floor(totalSeconds / 3600);
-    const mins = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return formatSeconds(totalSeconds);
   };
 
   // Handlers
@@ -352,7 +352,7 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                       <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
                         {t.remainingTime}
                       </span>
-                      <span className="font-mono text-2xl font-black tracking-widest block">
+                      <span className="font-mono text-2xl font-black tracking-widest block" dir="ltr">
                         {formatTime(remainingSec)}
                       </span>
                     </div>
@@ -365,17 +365,17 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                       </div>
                       <div className="flex justify-between text-slate-300">
                         <span className="text-slate-400">{t.sessionCost}:</span>
-                        <span className="font-mono">{session.session_cost.toFixed(2)} {t.currency}</span>
+                        <span className="font-mono" dir="ltr">{formatMoney(session.session_cost)} {t.currency}</span>
                       </div>
-                      {session.beverage_cost > 0 && (
+                      {safeNum(session.beverage_cost) > 0 && (
                         <div className="flex justify-between text-slate-300">
                           <span className="text-slate-400">{t.drinksCost}:</span>
-                          <span className="font-mono text-amber-400">+{session.beverage_cost.toFixed(2)} {t.currency}</span>
+                          <span className="font-mono text-amber-400" dir="ltr">+{formatMoney(session.beverage_cost)} {t.currency}</span>
                         </div>
                       )}
                       <div className="flex justify-between text-white font-bold pt-1 border-t border-border/60">
                         <span>{t.totalDue}:</span>
-                        <span className="font-mono text-emerald-400 text-sm">{session.total_amount.toFixed(2)} {t.currency}</span>
+                        <span className="font-mono text-emerald-400 text-sm" dir="ltr">{formatMoney(session.total_amount)} {t.currency}</span>
                       </div>
                     </div>
                   </div>
@@ -520,11 +520,11 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
               {/* Price Calculation Preview */}
               <div className="p-3 rounded-xl bg-surface border border-border flex justify-between items-center text-xs">
                 <span className="text-slate-400">Calculated Session Cost:</span>
-                <span className="font-mono font-bold text-emerald-400 text-sm">
-                  {(
+                <span className="font-mono font-bold text-emerald-400 text-sm" dir="ltr">
+                  {formatMoney(
                     ((startCustomDuration ? parseInt(startCustomDuration) : startDuration) / 60) *
                     startModalDevice.hourly_rate
-                  ).toFixed(2)}{' '}
+                  )}{' '}
                   {t.currency}
                 </span>
               </div>
@@ -605,12 +605,12 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
               {/* Price Calculation Preview */}
               <div className="p-3 rounded-xl bg-surface border border-border flex justify-between items-center text-xs">
                 <span className="text-slate-400">Additional Fee:</span>
-                <span className="font-mono font-bold text-emerald-400 text-sm">
+                <span className="font-mono font-bold text-emerald-400 text-sm" dir="ltr">
                   +
-                  {(
+                  {formatMoney(
                     ((extendCustomMinutes ? parseInt(extendCustomMinutes) : extendMinutes) / 60) *
                     extendModalDevice.hourly_rate
-                  ).toFixed(2)}{' '}
+                  )}{' '}
                   {t.currency}
                 </span>
               </div>
@@ -675,8 +675,8 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                     >
                       <div>
                         <p className="font-bold text-xs text-white leading-tight">{p.name}</p>
-                        <p className="text-[10px] text-amber-400 font-mono font-bold mt-0.5">
-                          {p.price.toFixed(2)} {t.currency}
+                        <p className="text-[10px] text-amber-400 font-mono font-bold mt-0.5" dir="ltr">
+                          {formatMoney(p.price)} {t.currency}
                         </p>
                       </div>
 
@@ -775,12 +775,12 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                 </div>
                 <div className="flex justify-between text-slate-300">
                   <span className="text-slate-400">{t.sessionCost} ({endModalDevice.active_session.duration_minutes}m):</span>
-                  <span className="font-mono">{endModalDevice.active_session.session_cost.toFixed(2)} {t.currency}</span>
+                  <span className="font-mono" dir="ltr">{formatMoney(endModalDevice.active_session.session_cost)} {t.currency}</span>
                 </div>
-                {endModalDevice.active_session.beverage_cost > 0 && (
+                {safeNum(endModalDevice.active_session.beverage_cost) > 0 && (
                   <div className="flex justify-between text-slate-300">
                     <span className="text-slate-400">{t.drinksCost}:</span>
-                    <span className="font-mono text-amber-400">+{endModalDevice.active_session.beverage_cost.toFixed(2)} {t.currency}</span>
+                    <span className="font-mono text-amber-400" dir="ltr">+{formatMoney(endModalDevice.active_session.beverage_cost)} {t.currency}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center pt-2 border-t border-border">
@@ -795,13 +795,13 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                 </div>
                 <div className="flex justify-between text-white font-bold pt-2 border-t border-border text-base">
                   <span>{t.totalDue}:</span>
-                  <span className="font-mono text-emerald-400">
-                    {Math.max(
+                  <span className="font-mono text-emerald-400" dir="ltr">
+                    {formatMoney(Math.max(
                       0,
-                      endModalDevice.active_session.session_cost +
-                        endModalDevice.active_session.beverage_cost -
+                      safeNum(endModalDevice.active_session.session_cost) +
+                        safeNum(endModalDevice.active_session.beverage_cost) -
                         (parseFloat(endDiscount) || 0)
-                    ).toFixed(2)}{' '}
+                    ))}{' '}
                     {t.currency}
                   </span>
                 </div>

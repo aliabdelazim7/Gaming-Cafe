@@ -20,6 +20,11 @@ backend/database/*.sqlite-journal
 .vscode/
 *.log
 
-# OS files
+# OS & Media files
 Thumbs.db
 .DS_Store
+*.mp4
+*.png
+*.jpg
+*.jpeg
+

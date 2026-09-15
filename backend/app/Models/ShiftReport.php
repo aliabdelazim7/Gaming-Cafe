@@ -23,9 +23,9 @@ class ShiftReport extends Model
         'total_orders' => 'integer',
         'total_beverages_sold' => 'integer',
         'total_sessions' => 'integer',
-        'total_revenue' => 'decimal:2',
-        'cash_transactions' => 'decimal:2',
-        'card_transactions' => 'decimal:2',
+        'total_revenue' => 'float',
+        'cash_transactions' => 'float',
+        'card_transactions' => 'float',
     ];
 
     public function shift()

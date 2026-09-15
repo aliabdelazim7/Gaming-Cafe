@@ -16,6 +16,7 @@ import {
 import { Shift, ShiftMetrics, User as UserType } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { api } from '../services/api';
+import { formatMoney } from '../utils/format';
 
 interface ShiftDashboardProps {
   lang: Language;
@@ -110,8 +111,8 @@ export const ShiftDashboard: React.FC<ShiftDashboardProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400 uppercase font-semibold">{t.grossRevenue}</p>
-              <p className="text-xl font-mono font-black text-emerald-400">
-                {metrics?.total_revenue?.toFixed(2) || '0.00'} {t.currency}
+              <p className="text-xl font-mono font-black text-emerald-400" dir="ltr">
+                {formatMoney(metrics?.total_revenue)} {t.currency}
               </p>
             </div>
           </div>
@@ -122,8 +123,8 @@ export const ShiftDashboard: React.FC<ShiftDashboardProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400 uppercase font-semibold">{t.cashInDrawer}</p>
-              <p className="text-xl font-mono font-black text-amber-300">
-                {metrics?.cash_collected?.toFixed(2) || '0.00'} {t.currency}
+              <p className="text-xl font-mono font-black text-amber-300" dir="ltr">
+                {formatMoney(metrics?.cash_collected)} {t.currency}
               </p>
             </div>
           </div>
@@ -134,8 +135,8 @@ export const ShiftDashboard: React.FC<ShiftDashboardProps> = ({
             </div>
             <div>
               <p className="text-xs text-slate-400 uppercase font-semibold">{t.cardSales}</p>
-              <p className="text-xl font-mono font-black text-cyan-300">
-                {metrics?.card_collected?.toFixed(2) || '0.00'} {t.currency}
+              <p className="text-xl font-mono font-black text-cyan-300" dir="ltr">
+                {formatMoney(metrics?.card_collected)} {t.currency}
               </p>
             </div>
           </div>
@@ -167,8 +168,8 @@ export const ShiftDashboard: React.FC<ShiftDashboardProps> = ({
           </div>
           <div className="p-4 rounded-xl bg-surface border border-border text-center">
             <span className="text-xs text-slate-400 block mb-1">{t.averageTicket}</span>
-            <span className="text-lg font-mono font-bold text-white">
-              {metrics?.average_order_value?.toFixed(2) || '0.00'} {t.currency}
+            <span className="text-lg font-mono font-bold text-white" dir="ltr">
+              {formatMoney(metrics?.average_order_value)} {t.currency}
             </span>
           </div>
         </div>
@@ -236,11 +237,11 @@ export const ShiftDashboard: React.FC<ShiftDashboardProps> = ({
                           })
                         : 'Active Now'}
                     </td>
-                    <td className="py-3 px-3 font-mono font-bold text-emerald-400">
-                      {s.total_before_deductions?.toFixed(2) || '0.00'} {t.currency}
+                    <td className="py-3 px-3 font-mono font-bold text-emerald-400" dir="ltr">
+                      {formatMoney(s.total_before_deductions)} {t.currency}
                     </td>
-                    <td className="py-3 px-3 font-mono text-slate-300">
-                      {s.cash_collected?.toFixed(2)} / {s.card_collected?.toFixed(2)}
+                    <td className="py-3 px-3 font-mono text-slate-300" dir="ltr">
+                      {formatMoney(s.cash_collected)} / {formatMoney(s.card_collected)}
                     </td>
                     <td className="py-3 px-3">
                       <span

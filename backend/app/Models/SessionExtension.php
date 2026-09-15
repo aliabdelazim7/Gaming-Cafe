@@ -21,7 +21,7 @@ class SessionExtension extends Model
     protected $casts = [
         'requested_at' => 'datetime',
         'applied_at' => 'datetime',
-        'price' => 'decimal:2',
+        'price' => 'float',
     ];
 
     public function session()

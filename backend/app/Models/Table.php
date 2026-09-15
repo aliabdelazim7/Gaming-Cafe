@@ -19,7 +19,7 @@ class Table extends Model
 
     protected $casts = [
         'capacity' => 'integer',
-        'total_spent' => 'decimal:2',
+        'total_spent' => 'float',
     ];
 
     public function orders()

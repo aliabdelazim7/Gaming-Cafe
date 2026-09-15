@@ -25,11 +25,11 @@ class Shift extends Model
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
-        'total_before_deductions' => 'decimal:2',
-        'total_after_deductions' => 'decimal:2',
-        'deductions' => 'decimal:2',
-        'cash_collected' => 'decimal:2',
-        'card_collected' => 'decimal:2',
+        'total_before_deductions' => 'float',
+        'total_after_deductions' => 'float',
+        'deductions' => 'float',
+        'cash_collected' => 'float',
+        'card_collected' => 'float',
     ];
 
     public function staff()

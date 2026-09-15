@@ -17,6 +17,7 @@ import {
 import { Shift, ShiftMetrics, User, NotificationItem } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { sounds } from '../utils/audio';
+import { formatMoney } from '../utils/format';
 
 interface HeaderProps {
   lang: Language;
@@ -114,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="text-slate-300 font-medium">
                   {t.currentShift}:
                 </span>
-                <span className="font-mono font-bold text-emerald-400">
+                <span className="font-mono font-bold text-emerald-400" dir="ltr">
                   {metrics?.elapsed_time_formatted || '00:00:00'}
                 </span>
               </div>
@@ -122,8 +123,8 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center gap-1.5">
                 <DollarSign className="w-4 h-4 text-amber-400" />
                 <span className="text-slate-400 text-xs">{t.shiftRevenue}:</span>
-                <span className="font-bold text-amber-300 font-mono">
-                  {metrics?.total_revenue?.toFixed(2) || '0.00'} {t.currency}
+                <span className="font-bold text-amber-300 font-mono" dir="ltr">
+                  {formatMoney(metrics?.total_revenue)} {t.currency}
                 </span>
               </div>
               <div className="h-4 w-px bg-border" />

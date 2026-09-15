@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckCircle2, X, DollarSign, FileText, AlertCircle } from 'lucide-react';
 import { Shift, ShiftMetrics } from '../types';
 import { Language, translations } from '../i18n/translations';
+import { formatMoney } from '../utils/format';
 
 interface EndShiftModalProps {
   lang: Language;
@@ -72,24 +73,24 @@ export const EndShiftModal: React.FC<EndShiftModalProps> = ({
               <span className="text-[10px] uppercase text-slate-400 font-bold block">
                 {t.grossRevenue}
               </span>
-              <span className="text-sm font-bold text-emerald-400 font-mono">
-                {metrics?.total_revenue?.toFixed(2) || '0.00'} {t.currency}
+              <span className="text-sm font-bold text-emerald-400 font-mono" dir="ltr">
+                {formatMoney(metrics?.total_revenue)} {t.currency}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-surface border border-border text-center">
               <span className="text-[10px] uppercase text-slate-400 font-bold block">
                 {t.cashInDrawer}
               </span>
-              <span className="text-sm font-bold text-amber-300 font-mono">
-                {expectedCash.toFixed(2)} {t.currency}
+              <span className="text-sm font-bold text-amber-300 font-mono" dir="ltr">
+                {formatMoney(expectedCash)} {t.currency}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-surface border border-border text-center">
               <span className="text-[10px] uppercase text-slate-400 font-bold block">
                 {t.cardSales}
               </span>
-              <span className="text-sm font-bold text-cyan-400 font-mono">
-                {metrics?.card_collected?.toFixed(2) || '0.00'} {t.currency}
+              <span className="text-sm font-bold text-cyan-400 font-mono" dir="ltr">
+                {formatMoney(metrics?.card_collected)} {t.currency}
               </span>
             </div>
           </div>
@@ -101,8 +102,8 @@ export const EndShiftModal: React.FC<EndShiftModalProps> = ({
                 <DollarSign className="w-3.5 h-3.5 text-amber-400" />
                 <span>{t.countedCash} ({t.currency})</span>
               </span>
-              <span className={`text-xs font-mono font-bold ${discrepancy === 0 ? 'text-emerald-400' : discrepancy < 0 ? 'text-rose-400' : 'text-cyan-400'}`}>
-                {discrepancy === 0 ? 'Exact Match' : `${discrepancy > 0 ? '+' : ''}${discrepancy.toFixed(2)} diff`}
+              <span className={`text-xs font-mono font-bold ${discrepancy === 0 ? 'text-emerald-400' : discrepancy < 0 ? 'text-rose-400' : 'text-cyan-400'}`} dir="ltr">
+                {discrepancy === 0 ? 'Exact Match' : `${discrepancy > 0 ? '+' : ''}${formatMoney(discrepancy)} diff`}
               </span>
             </label>
             <input

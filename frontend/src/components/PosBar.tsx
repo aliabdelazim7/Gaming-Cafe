@@ -19,6 +19,7 @@ import {
 import { Device, Order, OrderType, PaymentMethod, Product, Table, ThermalReceipt } from '../types';
 import { Language, translations } from '../i18n/translations';
 import { sounds } from '../utils/audio';
+import { formatMoney } from '../utils/format';
 
 interface PosBarProps {
   lang: Language;
@@ -282,8 +283,8 @@ export const PosBar: React.FC<PosBarProps> = ({
 
                 {/* Price */}
                 <div className="mt-3 pt-2 border-t border-border/60 flex items-center justify-between w-full">
-                  <span className="font-bold text-amber-400 font-mono text-xs md:text-sm">
-                    {product.price.toFixed(2)} {t.currency}
+                  <span className="font-bold text-amber-400 font-mono text-xs md:text-sm" dir="ltr">
+                    {formatMoney(product.price)} {t.currency}
                   </span>
                   <div className="p-1 rounded-lg bg-surface group-hover:bg-amber-500 group-hover:text-black transition text-slate-300">
                     <Plus className="w-3.5 h-3.5" />
@@ -403,8 +404,8 @@ export const PosBar: React.FC<PosBarProps> = ({
                   <p className="font-bold text-xs text-white leading-tight">
                     {lang === 'ar' ? item.product.name_ar : item.product.name}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono">
-                    {item.product.price.toFixed(2)} {t.currency}
+                  <p className="text-[10px] text-slate-400 font-mono" dir="ltr">
+                    {formatMoney(item.product.price)} {t.currency}
                   </p>
                 </div>
 
@@ -415,7 +416,7 @@ export const PosBar: React.FC<PosBarProps> = ({
                   >
                     <Minus className="w-3 h-3" />
                   </button>
-                  <span className="font-mono text-xs font-bold text-white w-4 text-center">
+                  <span className="font-mono text-xs font-bold text-white w-4 text-center" dir="ltr">
                     {item.quantity}
                   </span>
                   <button
@@ -424,8 +425,8 @@ export const PosBar: React.FC<PosBarProps> = ({
                   >
                     <Plus className="w-3 h-3" />
                   </button>
-                  <span className="font-mono font-bold text-xs text-amber-400 w-16 text-right">
-                    {item.subtotal.toFixed(2)}
+                  <span className="font-mono font-bold text-xs text-amber-400 w-16 text-right" dir="ltr">
+                    {formatMoney(item.subtotal)}
                   </span>
                 </div>
               </div>
@@ -437,7 +438,7 @@ export const PosBar: React.FC<PosBarProps> = ({
         <div className="pt-3 border-t border-border space-y-1.5 text-xs text-slate-300">
           <div className="flex justify-between">
             <span className="text-slate-400">{t.subtotal}:</span>
-            <span className="font-mono">{subtotal.toFixed(2)} {t.currency}</span>
+            <span className="font-mono" dir="ltr">{formatMoney(subtotal)} {t.currency}</span>
           </div>
 
           <div className="flex justify-between items-center">
@@ -456,8 +457,8 @@ export const PosBar: React.FC<PosBarProps> = ({
 
           <div className="flex justify-between text-base font-black text-white pt-2 border-t border-border">
             <span>{t.total}:</span>
-            <span className="font-mono text-emerald-400 text-lg">
-              {total.toFixed(2)} {t.currency}
+            <span className="font-mono text-emerald-400 text-lg" dir="ltr">
+              {formatMoney(total)} {t.currency}
             </span>
           </div>
         </div>
@@ -481,7 +482,7 @@ export const PosBar: React.FC<PosBarProps> = ({
               <div className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-emerald-400" />
                 <h3 className="text-base font-bold text-white">
-                  {t.checkout}: {total.toFixed(2)} {t.currency}
+                  {t.checkout}: <span dir="ltr">{formatMoney(total)}</span> {t.currency}
                 </h3>
               </div>
               <button
@@ -526,8 +527,8 @@ export const PosBar: React.FC<PosBarProps> = ({
                     <label className="text-xs font-semibold text-slate-300">
                       {t.cashTendered} ({t.currency})
                     </label>
-                    <span className="text-xs font-mono font-bold text-emerald-400">
-                      {t.changeDue}: {changeDue.toFixed(2)} {t.currency}
+                    <span className="text-xs font-mono font-bold text-emerald-400" dir="ltr">
+                      {t.changeDue}: {formatMoney(changeDue)} {t.currency}
                     </span>
                   </div>
 

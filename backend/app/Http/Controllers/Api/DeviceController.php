@@ -26,13 +26,16 @@ class DeviceController extends Controller
 
             if ($session) {
                 $endTime = Carbon::parse($session->end_time);
-                $remainingSeconds = $now->diffInSeconds($endTime, false);
+                $diffSec = $now->diffInSeconds($endTime, false);
 
-                if ($remainingSeconds <= 0) {
+                if ($diffSec <= 0) {
                     $isEnded = true;
                     $remainingSeconds = 0;
-                } elseif ($remainingSeconds <= 600) { // 10 minutes or less
-                    $isEndingSoon = true;
+                } else {
+                    $remainingSeconds = (int)round($diffSec);
+                    if ($remainingSeconds <= 600) { // 10 minutes or less
+                        $isEndingSoon = true;
+                    }
                 }
             }
 
