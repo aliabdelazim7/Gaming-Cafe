@@ -39,6 +39,8 @@ export default {
         sans: ['Inter', 'system-ui', 'Tajawal', 'sans-serif'],
         mono: ['"Fira Code"', 'monospace'],
         arabic: ['Tajawal', 'Inter', 'sans-serif'],
+        gaming: ['"Chakra Petch"', 'Tajawal', 'sans-serif'],
+        display: ['"Russo One"', '"Chakra Petch"', 'Tajawal', 'sans-serif'],
       },
       boxShadow: {
         'neon-purple': '0 0 20px rgba(124, 58, 237, 0.35)',
