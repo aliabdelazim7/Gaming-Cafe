@@ -1,0 +1,6 @@
+{
+  " name\: \al5al-gaming-cafe\,
+ \scripts\: {
+ \build\: \npm --prefix frontend run build\
+ }
+}

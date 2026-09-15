@@ -23,8 +23,9 @@ backend/database/*.sqlite-journal
 # OS & Media files
 Thumbs.db
 .DS_Store
-*.mp4
-*.png
-*.jpg
-*.jpeg
+/*.mp4
+/*.png
+/*.jpg
+/*.jpeg
+!frontend/public/**
 
