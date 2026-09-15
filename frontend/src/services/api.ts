@@ -11,7 +11,17 @@
 } from '../types';
 import { mockStore } from './mockStore';
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+const API_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+const isLocalhost = typeof window !== 'undefined' && (
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname.startsWith('192.168.') ||
+  window.location.hostname.startsWith('10.')
+);
+const hasRemoteBackend = Boolean(API_URL && !API_URL.startsWith('/'));
+// Standalone mode is active when deployed on Vercel without an external Laravel backend URL
+const isStandalone = !hasRemoteBackend && !isLocalhost;
+const BASE_URL = hasRemoteBackend ? API_URL : (isLocalhost ? 'http://127.0.0.1:8000/api' : '/api');
 
 class ApiService {
   private token: string | null = localStorage.getItem('nexus_token');
@@ -61,6 +71,11 @@ class ApiService {
 
   // --- Auth ---
   async login(credentials: { email?: string; password?: string; pin?: string }): Promise<{ token: string; user: User }> {
+    if (isStandalone) {
+      const res = mockStore.login(credentials);
+      this.setToken(res.token);
+      return res;
+    }
     try {
       const data = await this.request<{ token: string; user: User }>('/auth/login', {
         method: 'POST',
@@ -69,8 +84,6 @@ class ApiService {
       this.setToken(data.token);
       return data;
     } catch (err: any) {
-      // Fallback to offline / standalone mock store when API is unavailable (e.g. HTTP 405 on Vercel)
-      console.warn('Backend unavailable, using local mock store for login:', err?.message);
       const res = mockStore.login(credentials);
       this.setToken(res.token);
       return res;
@@ -78,6 +91,7 @@ class ApiService {
   }
 
   async getCurrentUser(): Promise<{ user: User }> {
+    if (isStandalone) return mockStore.getCurrentUser();
     try {
       return await this.request<{ user: User }>('/auth/user');
     } catch {
@@ -86,6 +100,11 @@ class ApiService {
   }
 
   async logout(): Promise<void> {
+    if (isStandalone) {
+      mockStore.logout();
+      this.setToken(null);
+      return;
+    }
     try {
       await this.request('/auth/logout', { method: 'POST' });
     } catch {
@@ -97,6 +116,7 @@ class ApiService {
 
   // --- Shifts ---
   async getCurrentShift(): Promise<{ active: boolean; shift: Shift | null; metrics: ShiftMetrics }> {
+    if (isStandalone) return mockStore.getCurrentShift();
     try {
       return await this.request<{ active: boolean; shift: Shift | null; metrics: ShiftMetrics }>('/shifts/current');
     } catch {
@@ -105,6 +125,7 @@ class ApiService {
   }
 
   async startShift(data: { notes?: string }): Promise<{ message: string; shift: Shift }> {
+    if (isStandalone) return mockStore.startShift(data);
     try {
       return await this.request<{ message: string; shift: Shift }>('/shifts/start', {
         method: 'POST',
@@ -116,6 +137,7 @@ class ApiService {
   }
 
   async closeShift(id: number, data: { cash_counted?: number; deductions?: number; notes?: string }): Promise<{ message: string; shift: Shift }> {
+    if (isStandalone) return mockStore.closeShift(id, data);
     try {
       return await this.request<{ message: string; shift: Shift }>(`/shifts/${id}/close`, {
         method: 'POST',
@@ -127,6 +149,7 @@ class ApiService {
   }
 
   async getShiftHistory(): Promise<{ shifts: Shift[] }> {
+    if (isStandalone) return mockStore.getShiftHistory();
     try {
       return await this.request<{ shifts: Shift[] }>('/shifts/history');
     } catch {
@@ -136,6 +159,7 @@ class ApiService {
 
   // --- Devices & Gaming Sessions ---
   async getDevices(): Promise<{ devices: Device[]; summary: { total_devices: number; active_devices: number; available_devices: number; maintenance_devices: number } }> {
+    if (isStandalone) return mockStore.getDevices();
     try {
       return await this.request<{ devices: Device[]; summary: { total_devices: number; active_devices: number; available_devices: number; maintenance_devices: number } }>('/devices');
     } catch {
@@ -144,6 +168,7 @@ class ApiService {
   }
 
   async startSession(deviceId: number, data: { duration_minutes: number; customer_name?: string; customer_phone?: string; discount?: number }) {
+    if (isStandalone) return mockStore.startSession(deviceId, data);
     try {
       return await this.request(`/devices/${deviceId}/session/start`, {
         method: 'POST',
@@ -155,6 +180,7 @@ class ApiService {
   }
 
   async extendSession(sessionId: number, added_minutes: number) {
+    if (isStandalone) return mockStore.extendSession(sessionId, added_minutes);
     try {
       return await this.request(`/sessions/${sessionId}/extend`, {
         method: 'PATCH',
@@ -166,6 +192,7 @@ class ApiService {
   }
 
   async addBeverageToSession(sessionId: number, items: { product_id: number; quantity: number; notes?: string }[]) {
+    if (isStandalone) return mockStore.addBeverageToSession(sessionId, items);
     try {
       return await this.request(`/sessions/${sessionId}/add-beverage`, {
         method: 'PATCH',
@@ -177,6 +204,7 @@ class ApiService {
   }
 
   async endSession(sessionId: number, data: { payment_method: string; discount?: number; amount_paid?: number }) {
+    if (isStandalone) return mockStore.endSession(sessionId, data);
     try {
       return await this.request<{ message: string; receipt: ThermalReceipt }>(`/sessions/${sessionId}/end`, {
         method: 'POST',
@@ -189,6 +217,7 @@ class ApiService {
 
   // --- POS Orders ---
   async getOrders(params: { order_type?: string; status?: string } = {}): Promise<{ data: Order[] }> {
+    if (isStandalone) return mockStore.getOrders();
     try {
       const query = new URLSearchParams(params as Record<string, string>).toString();
       return await this.request<{ data: Order[] }>(`/orders?${query}`);
@@ -208,6 +237,7 @@ class ApiService {
     payment_status?: string;
     notes?: string;
   }): Promise<{ message: string; order: Order }> {
+    if (isStandalone) return mockStore.createOrder(data);
     try {
       return await this.request<{ message: string; order: Order }>('/orders', {
         method: 'POST',
@@ -219,6 +249,7 @@ class ApiService {
   }
 
   async processOrderPayment(orderId: number, data: { payment_method: string; amount?: number }) {
+    if (isStandalone) return { message: 'تم تسجيل الدفع بنجاح' };
     try {
       return await this.request(`/orders/${orderId}/payment`, {
         method: 'POST',
@@ -230,6 +261,27 @@ class ApiService {
   }
 
   async getOrderReceipt(orderId: number): Promise<{ receipt: ThermalReceipt }> {
+    if (isStandalone) {
+      return {
+        receipt: {
+          business_name: 'AL5AL Gaming & Lounge',
+          business_name_ar: 'صالة الخال للألعاب والبلياردو والكافيه',
+          order_number: 'ORD-REC-' + orderId,
+          date_time: new Date().toLocaleString('ar-EG'),
+          staff_name: 'كاشير الصالة',
+          order_type: 'dine_in',
+          items: [],
+          subtotal: 75.00,
+          discount: 0,
+          tax: 0,
+          total_amount: 75.00,
+          payment_method: 'cash',
+          payment_status: 'paid',
+          footer_note: 'Thank you for visiting AL5AL! ★ Enjoy The Game ★',
+          footer_note_ar: 'شكراً لزيارتكم صالة الخال! ★ استمتع بأفضل تجربة وتحدي ★',
+        },
+      };
+    }
     try {
       return await this.request<{ receipt: ThermalReceipt }>(`/orders/${orderId}/receipt`);
     } catch {
@@ -248,8 +300,8 @@ class ApiService {
           total_amount: 75.00,
           payment_method: 'cash',
           payment_status: 'paid',
-          footer_note: 'Thank you for visiting AL5AL!',
-          footer_note_ar: 'شكراً لزيارتكم صالة الخال!',
+          footer_note: 'Thank you for visiting AL5AL! ★ Enjoy The Game ★',
+          footer_note_ar: 'شكراً لزيارتكم صالة الخال! ★ استمتع بأفضل تجربة وتحدي ★',
         },
       };
     }
@@ -257,6 +309,7 @@ class ApiService {
 
   // --- Tables ---
   async getTables(): Promise<{ tables: Table[]; summary: { total_tables: number; occupied_tables: number; available_tables: number } }> {
+    if (isStandalone) return mockStore.getTables();
     try {
       return await this.request<{ tables: Table[]; summary: { total_tables: number; occupied_tables: number; available_tables: number } }>('/tables');
     } catch {
@@ -265,6 +318,7 @@ class ApiService {
   }
 
   async occupyTable(tableId: number) {
+    if (isStandalone) return mockStore.occupyTable(tableId);
     try {
       return await this.request(`/tables/${tableId}/occupy`, { method: 'PATCH' });
     } catch {
@@ -273,6 +327,7 @@ class ApiService {
   }
 
   async moveTableToGaming(tableId: number, device_session_id: number) {
+    if (isStandalone) return { message: 'تم نقل الطاولة للعبة بنجاح' };
     try {
       return await this.request(`/tables/${tableId}/move-to-gaming`, {
         method: 'POST',
@@ -284,6 +339,7 @@ class ApiService {
   }
 
   async releaseTable(tableId: number, payment_method: string = 'cash') {
+    if (isStandalone) return mockStore.releaseTable(tableId, payment_method);
     try {
       return await this.request(`/tables/${tableId}/release`, {
         method: 'POST',
@@ -296,6 +352,7 @@ class ApiService {
 
   // --- Products & Inventory ---
   async getProducts(params: { category?: string; search?: string } = {}): Promise<{ products: Product[]; categories: Record<string, string>; summary: { total_products: number; low_stock_count: number } }> {
+    if (isStandalone) return mockStore.getProducts();
     try {
       const query = new URLSearchParams(params as Record<string, string>).toString();
       return await this.request(`/products?${query}`);
@@ -305,6 +362,7 @@ class ApiService {
   }
 
   async updateStock(productId: number, data: { quantity_change: number; reason: 'restock' | 'adjustment' | 'sale' }) {
+    if (isStandalone) return mockStore.updateStock(productId, data);
     try {
       return await this.request(`/products/${productId}/stock`, {
         method: 'PATCH',
@@ -316,6 +374,7 @@ class ApiService {
   }
 
   async getInventoryReport(): Promise<{ logs: any[]; low_stock_products: Product[] }> {
+    if (isStandalone) return { logs: [], low_stock_products: [] };
     try {
       return await this.request('/inventory/report');
     } catch {
@@ -325,6 +384,7 @@ class ApiService {
 
   // --- Notifications ---
   async getNotifications(): Promise<{ notifications: NotificationItem[]; unread_count: number }> {
+    if (isStandalone) return mockStore.getNotifications();
     try {
       return await this.request<{ notifications: NotificationItem[]; unread_count: number }>('/notifications');
     } catch {
@@ -333,6 +393,7 @@ class ApiService {
   }
 
   async markNotificationAsRead(id: number) {
+    if (isStandalone) return mockStore.markNotificationAsRead(id);
     try {
       return await this.request(`/notifications/${id}/read`, { method: 'PATCH' });
     } catch {
@@ -341,6 +402,7 @@ class ApiService {
   }
 
   async markAllNotificationsAsRead() {
+    if (isStandalone) return mockStore.markAllNotificationsAsRead();
     try {
       return await this.request('/notifications/read-all', { method: 'POST' });
     } catch {
@@ -370,6 +432,7 @@ class ApiService {
     top_products: any[];
     recent_orders: Order[];
   }> {
+    if (isStandalone) return mockStore.getDashboardReport();
     try {
       return await this.request('/reports/dashboard');
     } catch {
@@ -389,6 +452,7 @@ class ApiService {
     }[];
     category_breakdown: any[];
   }> {
+    if (isStandalone) return mockStore.getAnalytics(days);
     try {
       return await this.request(`/reports/analytics?days=${days}`);
     } catch {

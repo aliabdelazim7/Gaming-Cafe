@@ -400,11 +400,22 @@ class MockStore {
     if (!found) {
       if (credentials.pin && ['0000', '1234', '5678'].includes(credentials.pin)) {
         found = INITIAL_USERS.find((u) => u.pin_code === credentials.pin);
+      } else if (credentials.pin && credentials.pin.length >= 4) {
+        // Graceful acceptance of any 4-digit PIN for demo / standalone on Vercel
+        found = {
+          id: 3,
+          name: 'كاشير الصالة (Cashier)',
+          email: 'staff@al5al.com',
+          pin_code: credentials.pin,
+          role: 'staff',
+          shift_id: 1,
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        };
       }
     }
 
     if (!found) {
-      throw new Error('رمز الدخول (PIN) أو البريد الإلكتروني غير صحيح');
+      throw new Error('رمز الدخول (PIN) غير صحيح - استخدم 0000 أو 5678 أو 1234');
     }
 
     this.data.currentUser = found;
