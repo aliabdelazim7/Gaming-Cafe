@@ -245,9 +245,9 @@ CREATE TABLE shift_reports (
 
 -- USERS (Passwords are bcrypt hashes of 'password123')
 INSERT INTO users (id, name, email, pin_code, phone, role, password, avatar, created_at, updated_at) VALUES
-(1, 'Karim - كريم', 'admin@al5al.com', '1234', '01032890430', 'admin', '.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', NOW(), NOW()),
-(2, 'Al-Ghareeb - الغريب', 'ghareeb@al5al.com', '5678', '01289535503', 'manager', '.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80', NOW(), NOW()),
-(3, 'Cashier - كاشير الصالة', 'staff@al5al.com', '0000', '0502943796', 'staff', '.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', NOW(), NOW());
+(1, 'Karim - كريم', 'admin@al5al.com', '1234', '01032890430', 'admin', '$2y$12$R.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', NOW(), NOW()),
+(2, 'Al-Ghareeb - الغريب', 'ghareeb@al5al.com', '5678', '01289535503', 'manager', '$2y$12$R.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80', NOW(), NOW()),
+(3, 'Cashier - كاشير الصالة', 'staff@al5al.com', '0000', '0502943796', 'staff', '$2y$12$R.9M9pT76dJbO4s5Y71Njeq.f4Y64DkJbQ09oW9q7M3Q6w9d4GZ3K', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', NOW(), NOW());
 
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 
