@@ -40,7 +40,7 @@ export interface ShiftMetrics {
   average_order_value: number;
 }
 
-export type DeviceType = 'ps5' | 'pc' | 'xbox' | 'sim' | 'other';
+export type DeviceType = 'ps5' | 'ps4' | 'billiards' | 'pingpong' | 'pc' | 'xbox' | 'sim' | 'other';
 export type DeviceStatus = 'available' | 'active' | 'maintenance';
 
 export interface Device {

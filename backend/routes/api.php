@@ -15,10 +15,16 @@ $apiRoutes = function () {
     // API Root & Health Check
     Route::get('/', function () {
         return response()->json([
-            'system' => 'Nexus Gaming Cafe & Coffee Shop Management System',
-            'system_ar' => 'نظام إدارة صالات الألعاب والكافيه - نكسس',
+            'system' => 'AL5AL Gaming, Billiards & Lounge Management System',
+            'system_ar' => 'نظام إدارة صالات الخال للألعاب والبلياردو والكافيه - AL5AL',
             'status' => 'online',
             'version' => '1.0.0',
+            'slogan' => '★ Enjoy The Game ★ استمتع بأفضل تجربة لعب وتحدي',
+            'contacts' => [
+                'karim' => '01032890430',
+                'al_ghareeb' => '01289535503',
+                'landline' => '0502943796',
+            ],
             'frontend_url' => 'http://localhost:5173',
             'endpoints' => [
                 'devices' => '/api/devices',

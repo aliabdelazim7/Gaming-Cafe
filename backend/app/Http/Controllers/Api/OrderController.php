@@ -223,8 +223,11 @@ class OrderController extends Controller
 
         return response()->json([
             'receipt' => [
-                'business_name' => 'Nexus Gaming Cafe & Lounge',
-                'business_name_ar' => 'نكسس كافيه ولاونج الألعاب',
+                'business_name' => 'AL5AL Gaming & Billiards Lounge',
+                'business_name_ar' => 'صالة الخال للألعاب والبلياردو والكافيه',
+                'tagline' => 'Billiards • PlayStation • Ping Pong • Cafe',
+                'slogan' => 'Enjoy The Game - استمتع بأفضل تجربة لعب وتحدي',
+                'phones' => '01032890430 (Karim) / 01289535503 (Al-Ghareeb) / 0502943796',
                 'order_number' => $order->order_number,
                 'date_time' => $order->created_at->format('Y-m-d H:i:s'),
                 'staff_name' => $order->staff ? $order->staff->name : 'Cashier',

@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('room_name_ar')->nullable();
             $table->string('device_name');
             $table->string('device_name_ar')->nullable();
-            $table->enum('device_type', ['ps5', 'pc', 'xbox', 'sim', 'other'])->default('ps5');
+            $table->enum('device_type', ['ps5', 'ps4', 'billiards', 'pingpong', 'pc', 'xbox', 'sim', 'other'])->default('ps5');
             $table->enum('status', ['available', 'active', 'maintenance'])->default('available');
             $table->string('location')->nullable();
             $table->decimal('hourly_rate', 8, 2)->default(50.00);

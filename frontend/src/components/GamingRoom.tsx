@@ -250,7 +250,19 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                     : 'text-slate-400 hover:text-white hover:bg-surface'
                 }`}
               >
-                {rm === 'all' ? t.filterAll : rm}
+                {rm === 'all'
+                  ? t.filterAll
+                  : lang === 'ar'
+                  ? rm === 'PlayStation Arena'
+                    ? 'صالة البلايستيشن 🎮'
+                    : rm === 'Billiards Arena'
+                    ? 'صالة البلياردو 🎱'
+                    : rm === 'Ping Pong Bay'
+                    ? 'منطقة البينج بونج 🏓'
+                    : rm === 'VIP Cyber Suite'
+                    ? 'غرفة VIP بلايستيشن ⭐'
+                    : rm
+                  : rm}
               </button>
             ))}
           </div>
@@ -304,12 +316,18 @@ export const GamingRoom: React.FC<GamingRoomProps> = ({
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
                     <div className="p-2 rounded-xl bg-surface border border-border text-primary-light">
-                      {device.device_type === 'pc' ? (
+                      {device.device_type === 'billiards' ? (
+                        <div className="w-5 h-5 rounded-full bg-emerald-950 border border-emerald-400/60 flex items-center justify-center text-xs font-black text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.5)]">
+                          8
+                        </div>
+                      ) : device.device_type === 'pingpong' ? (
+                        <div className="w-5 h-5 rounded-full bg-rose-950 border border-rose-400/60 flex items-center justify-center text-xs font-black text-rose-300 shadow-[0_0_8px_rgba(244,63,94,0.5)]">
+                          🏓
+                        </div>
+                      ) : device.device_type === 'pc' ? (
                         <Monitor className="w-5 h-5 text-cyan-400" />
-                      ) : device.device_type === 'sim' ? (
-                        <Zap className="w-5 h-5 text-amber-400" />
                       ) : (
-                        <Tv className="w-5 h-5 text-purple-400" />
+                        <Gamepad2 className="w-5 h-5 text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
                       )}
                     </div>
                     <div>

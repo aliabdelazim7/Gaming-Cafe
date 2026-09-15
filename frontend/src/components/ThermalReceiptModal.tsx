@@ -50,17 +50,23 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({
           >
             {/* Header */}
             <div className="text-center pb-3 border-b border-dashed border-gray-400">
-              <div className="text-lg font-black tracking-wider uppercase">
-                {receipt.business_name}
+              <div className="text-xl font-black tracking-wider uppercase font-mono">
+                ★ AL5AL LOUNGE ★
               </div>
-              <div className="text-xs font-semibold text-gray-700">
-                {receipt.business_name_ar}
+              <div className="text-sm font-bold text-gray-900 mt-0.5">
+                صالة الخال للألعاب والبلياردو والكافيه
               </div>
-              <div className="text-[10px] text-gray-500 mt-1">
-                Tax Invoice / فاتورة ضريبية مبسطة
+              <div className="text-[10px] font-semibold text-gray-700 mt-1">
+                بلياردو • بلايستيشن • بينج بونج • مشروبات
               </div>
-              <div className="text-[10px] text-gray-500">
-                VAT # 300192837400003
+              <div className="text-[9px] font-bold text-gray-600 italic mt-0.5">
+                ★ Enjoy The Game ★ استمتع بأفضل تجربة لعب وتحدي
+              </div>
+              <div className="text-[9px] text-gray-600 mt-1 pt-1 border-t border-dotted border-gray-300">
+                <span>كريم: 01032890430</span> • <span>الغريب: 01289535503</span>
+              </div>
+              <div className="text-[9px] text-gray-600">
+                هاتف أرضي: 0502943796
               </div>
             </div>
 
@@ -145,9 +151,9 @@ export const ThermalReceiptModal: React.FC<ThermalReceiptModalProps> = ({
 
             {/* Footer */}
             <div className="text-center text-[10px] text-gray-600 space-y-0.5 pt-1">
-              <p className="font-semibold">{receipt.footer_note}</p>
-              <p>{receipt.footer_note_ar}</p>
-              <p className="text-[8px] text-gray-400 pt-1">Powered by Nexus Gaming Cafe POS</p>
+              <p className="font-bold text-black">★ Enjoy The Game ★</p>
+              <p>استمتع بأفضل تجربة لعب وتحدي في صالة الخال</p>
+              <p className="text-[8px] text-gray-400 pt-1">Powered by AL5AL Gaming & Lounge POS</p>
             </div>
           </div>
         </div>

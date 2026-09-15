@@ -23,33 +23,33 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Users
+        // 1. Create Users (Karim, Al-Ghareeb, Staff)
         $admin = User::create([
-            'name' => 'Fahad Al-Admin',
-            'email' => 'admin@gamingcafe.com',
+            'name' => 'Karim - كريم',
+            'email' => 'admin@al5al.com',
             'password' => Hash::make('password123'),
             'pin_code' => '1234',
-            'phone' => '+966500112233',
+            'phone' => '01032890430',
             'role' => 'admin',
             'avatar' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
         ]);
 
         $manager = User::create([
-            'name' => 'Sara Manager',
-            'email' => 'manager@gamingcafe.com',
+            'name' => 'Al-Ghareeb - الغريب',
+            'email' => 'ghareeb@al5al.com',
             'password' => Hash::make('password123'),
             'pin_code' => '5678',
-            'phone' => '+966551122334',
+            'phone' => '01289535503',
             'role' => 'manager',
             'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
         ]);
 
         $staff = User::create([
-            'name' => 'Karim Staff',
-            'email' => 'staff@gamingcafe.com',
+            'name' => 'Cashier - كاشير الصالة',
+            'email' => 'staff@al5al.com',
             'password' => Hash::make('password123'),
             'pin_code' => '0000',
-            'phone' => '+966542233445',
+            'phone' => '0502943796',
             'role' => 'staff',
             'avatar' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
         ]);
@@ -63,37 +63,37 @@ class DatabaseSeeder extends Seeder
             'total_after_deductions' => 640.00,
             'cash_collected' => 380.00,
             'card_collected' => 260.00,
-            'notes' => 'Morning Shift - Weekend Rush',
+            'notes' => 'وردية الصباح - صالة الخال',
         ]);
 
         $staff->update(['shift_id' => $shift->id]);
 
-        // 3. Create Products / Cafe Items
+        // 3. Create Products / Cafe Items (Egyptian Pound EGP)
         $productsData = [
             // Hot Drinks
-            ['name' => 'Spanish Latte (Hot)', 'name_ar' => 'سبانش لاتيه حار', 'category' => 'hot_drinks', 'price' => 22.00, 'cost_price' => 7.00, 'stock_quantity' => 120, 'reorder_level' => 15],
-            ['name' => 'Espresso Double', 'name_ar' => 'دبل إسبريسو', 'category' => 'hot_drinks', 'price' => 15.00, 'cost_price' => 4.00, 'stock_quantity' => 200, 'reorder_level' => 20],
-            ['name' => 'Caramel Macchiato', 'name_ar' => 'كراميل ماكياتو', 'category' => 'hot_drinks', 'price' => 24.00, 'cost_price' => 8.00, 'stock_quantity' => 85, 'reorder_level' => 10],
-            ['name' => 'Karak Tea Special', 'name_ar' => 'شاي كرك مميز', 'category' => 'hot_drinks', 'price' => 12.00, 'cost_price' => 3.00, 'stock_quantity' => 150, 'reorder_level' => 20],
-            ['name' => 'Americano', 'name_ar' => 'أمريكانو', 'category' => 'hot_drinks', 'price' => 16.00, 'cost_price' => 4.50, 'stock_quantity' => 110, 'reorder_level' => 15],
+            ['name' => 'Turkish Coffee Double', 'name_ar' => 'قهوة تركي دبل (سادة / مظبوط)', 'category' => 'hot_drinks', 'price' => 20.00, 'cost_price' => 6.00, 'stock_quantity' => 150, 'reorder_level' => 20],
+            ['name' => 'Egyptian Tea Special', 'name_ar' => 'شاي ميزة بالنعناع', 'category' => 'hot_drinks', 'price' => 12.00, 'cost_price' => 3.00, 'stock_quantity' => 200, 'reorder_level' => 30],
+            ['name' => 'Espresso Double', 'name_ar' => 'دبل إسبريسو إيطالي', 'category' => 'hot_drinks', 'price' => 25.00, 'cost_price' => 7.00, 'stock_quantity' => 120, 'reorder_level' => 15],
+            ['name' => 'Hot Spanish Latte', 'name_ar' => 'سبانش لاتيه حار', 'category' => 'hot_drinks', 'price' => 35.00, 'cost_price' => 12.00, 'stock_quantity' => 80, 'reorder_level' => 15],
+            ['name' => 'Hot Chocolate Marshmallow', 'name_ar' => 'هوت شوكليت مارشميلو', 'category' => 'hot_drinks', 'price' => 35.00, 'cost_price' => 12.00, 'stock_quantity' => 70, 'reorder_level' => 10],
 
             // Cold Drinks
-            ['name' => 'Iced Spanish Latte', 'name_ar' => 'سبانش لاتيه بارد', 'category' => 'cold_drinks', 'price' => 25.00, 'cost_price' => 8.00, 'stock_quantity' => 95, 'reorder_level' => 15],
-            ['name' => 'Cold Brew Nitro', 'name_ar' => 'كولد برو نيترو', 'category' => 'cold_drinks', 'price' => 28.00, 'cost_price' => 9.50, 'stock_quantity' => 60, 'reorder_level' => 10],
-            ['name' => 'Iced Pistachio Latte', 'name_ar' => 'آيس بستاشيو لاتيه', 'category' => 'cold_drinks', 'price' => 30.00, 'cost_price' => 11.00, 'stock_quantity' => 45, 'reorder_level' => 10],
-            ['name' => 'Peach Passion Iced Tea', 'name_ar' => 'آيس تي خوخ وباشن فروت', 'category' => 'cold_drinks', 'price' => 20.00, 'cost_price' => 5.00, 'stock_quantity' => 70, 'reorder_level' => 12],
+            ['name' => 'Iced Spanish Latte', 'name_ar' => 'آيس سبانش لاتيه', 'category' => 'cold_drinks', 'price' => 40.00, 'cost_price' => 14.00, 'stock_quantity' => 90, 'reorder_level' => 15],
+            ['name' => 'Iced Caramel Macchiato', 'name_ar' => 'آيس كراميل ماكياتو', 'category' => 'cold_drinks', 'price' => 40.00, 'cost_price' => 14.00, 'stock_quantity' => 75, 'reorder_level' => 15],
+            ['name' => 'Mojito Blueberry Energy', 'name_ar' => 'موهيتو توت أزرق منعش', 'category' => 'cold_drinks', 'price' => 35.00, 'cost_price' => 10.00, 'stock_quantity' => 60, 'reorder_level' => 10],
+            ['name' => 'Iced Peach Tea', 'name_ar' => 'آيس تي خوخ منعش', 'category' => 'cold_drinks', 'price' => 25.00, 'cost_price' => 8.00, 'stock_quantity' => 80, 'reorder_level' => 15],
 
             // Soft Drinks & Energy
-            ['name' => 'Red Bull Energy 250ml', 'name_ar' => 'ريد بول كلاسيك', 'category' => 'soft_drinks', 'price' => 18.00, 'cost_price' => 9.00, 'stock_quantity' => 6, 'reorder_level' => 10], // Low stock warning!
-            ['name' => 'Red Bull Watermelon Punch', 'name_ar' => 'ريد بول بطيخ موخيتو', 'category' => 'soft_drinks', 'price' => 26.00, 'cost_price' => 12.00, 'stock_quantity' => 35, 'reorder_level' => 10],
-            ['name' => 'Pepsi Diet Can', 'name_ar' => 'بيبسي دايت', 'category' => 'soft_drinks', 'price' => 8.00, 'cost_price' => 2.50, 'stock_quantity' => 80, 'reorder_level' => 15],
-            ['name' => 'Sparkling Mineral Water', 'name_ar' => 'مياه غازية فاخرة', 'category' => 'soft_drinks', 'price' => 7.00, 'cost_price' => 2.00, 'stock_quantity' => 100, 'reorder_level' => 20],
+            ['name' => 'Red Bull Energy Can', 'name_ar' => 'ريد بول كلاسيك 250 مل', 'category' => 'soft_drinks', 'price' => 45.00, 'cost_price' => 30.00, 'stock_quantity' => 6, 'reorder_level' => 10],
+            ['name' => 'Pepsi Can 330ml', 'name_ar' => 'بيبسي كانز 330 مل', 'category' => 'soft_drinks', 'price' => 15.00, 'cost_price' => 9.00, 'stock_quantity' => 140, 'reorder_level' => 20],
+            ['name' => '7Up Lemon Can', 'name_ar' => 'سفن أب كانز 330 مل', 'category' => 'soft_drinks', 'price' => 15.00, 'cost_price' => 9.00, 'stock_quantity' => 100, 'reorder_level' => 20],
+            ['name' => 'Mineral Water 600ml', 'name_ar' => 'مياه معدنية 600 مل', 'category' => 'soft_drinks', 'price' => 8.00, 'cost_price' => 4.00, 'stock_quantity' => 180, 'reorder_level' => 30],
 
             // Snacks & Food
-            ['name' => 'Cheesy Gaming Nachos', 'name_ar' => 'ناتشوز بالجبن الساخن والهلابينو', 'category' => 'snacks', 'price' => 32.00, 'cost_price' => 12.00, 'stock_quantity' => 40, 'reorder_level' => 8],
-            ['name' => 'Warm Belgian Waffle', 'name_ar' => 'وافل بلجيكي بالنوتيلا', 'category' => 'food', 'price' => 28.00, 'cost_price' => 9.00, 'stock_quantity' => 25, 'reorder_level' => 5],
-            ['name' => 'Smoked Turkey Croissant', 'name_ar' => 'كرواسون الديك الرومي المدخن', 'category' => 'food', 'price' => 24.00, 'cost_price' => 8.50, 'stock_quantity' => 18, 'reorder_level' => 5],
-            ['name' => 'Double Chocolate Cookie', 'name_ar' => 'كوكيز شوكولاتة مضاعفة', 'category' => 'snacks', 'price' => 14.00, 'cost_price' => 4.00, 'stock_quantity' => 50, 'reorder_level' => 10],
+            ['name' => 'Cheesy Gaming Nachos', 'name_ar' => 'ناتشوز بالجبنة الشيدر والهلابينو', 'category' => 'snacks', 'price' => 45.00, 'cost_price' => 18.00, 'stock_quantity' => 40, 'reorder_level' => 10],
+            ['name' => 'Nutella Waffle', 'name_ar' => 'وافل بالنوتيلا والمكسرات', 'category' => 'food', 'price' => 45.00, 'cost_price' => 18.00, 'stock_quantity' => 30, 'reorder_level' => 8],
+            ['name' => 'French Fries Cheesy', 'name_ar' => 'بطاطس مقلية بالجبنة', 'category' => 'snacks', 'price' => 30.00, 'cost_price' => 10.00, 'stock_quantity' => 50, 'reorder_level' => 10],
+            ['name' => 'Double Chocolate Cookie', 'name_ar' => 'كوكيز شوكولاتة طازج', 'category' => 'snacks', 'price' => 20.00, 'cost_price' => 7.00, 'stock_quantity' => 60, 'reorder_level' => 15],
         ];
 
         $products = [];
@@ -108,20 +108,22 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 4. Create Gaming Devices / Rooms
+        // 4. Create Gaming & Sports Devices / Stations (Billiards, PlayStation, Ping Pong)
         $devices = [
-            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 01', 'device_type' => 'ps5', 'hourly_rate' => 40.00, 'status' => 'active', 'specs' => 'Sony PS5 + 65" 4K 120Hz + 2 DualSense Controllers'],
-            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 02', 'device_name_ar' => 'بلايستيشن 2', 'device_type' => 'ps5', 'hourly_rate' => 40.00, 'status' => 'active', 'specs' => 'Sony PS5 + 65" 4K 120Hz + 4 DualSense Controllers'],
-            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 03', 'device_type' => 'ps5', 'hourly_rate' => 40.00, 'status' => 'available', 'specs' => 'Sony PS5 + 55" 4K HDR + 2 Controllers'],
-            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 04', 'device_type' => 'ps5', 'hourly_rate' => 40.00, 'status' => 'available', 'specs' => 'Sony PS5 + 55" 4K HDR + 2 Controllers'],
-            
-            ['room_name' => 'Esports PC Arena', 'device_name' => 'PC Master 01', 'device_type' => 'pc', 'hourly_rate' => 50.00, 'status' => 'active', 'specs' => 'i9-14900K, RTX 4080 Super, 360Hz BenQ ZOWIE, HyperX Peripherals'],
-            ['room_name' => 'Esports PC Arena', 'device_name' => 'PC Master 02', 'device_type' => 'pc', 'hourly_rate' => 50.00, 'status' => 'available', 'specs' => 'i9-14900K, RTX 4080 Super, 360Hz BenQ ZOWIE, Razer Peripherals'],
-            ['room_name' => 'Esports PC Arena', 'device_name' => 'PC Master 03', 'device_type' => 'pc', 'hourly_rate' => 50.00, 'status' => 'maintenance', 'specs' => 'GPU Driver diagnostic testing'],
-            ['room_name' => 'Esports PC Arena', 'device_name' => 'PC Master 04', 'device_type' => 'pc', 'hourly_rate' => 50.00, 'status' => 'available', 'specs' => 'i7-14700K, RTX 4070Ti, 240Hz ASUS ROG'],
+            // PlayStation Arena
+            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 01', 'device_name_ar' => 'بلايستيشن 1 (PS5)', 'device_type' => 'ps5', 'hourly_rate' => 45.00, 'status' => 'active', 'specs' => 'Sony PS5 + 65" 4K 120Hz + 2 Controllers'],
+            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS5 Station 02', 'device_name_ar' => 'بلايستيشن 2 (PS5)', 'device_type' => 'ps5', 'hourly_rate' => 45.00, 'status' => 'active', 'specs' => 'Sony PS5 + 65" 4K 120Hz + 4 Controllers'],
+            ['room_name' => 'PlayStation Arena', 'device_name' => 'PS4 Station 03', 'device_name_ar' => 'بلايستيشن 3 (PS4 Pro)', 'device_type' => 'ps4', 'hourly_rate' => 30.00, 'status' => 'available', 'specs' => 'Sony PS4 Pro + 55" 4K HDR + 2 Controllers'],
+            ['room_name' => 'VIP Cyber Suite', 'device_name' => 'VIP PlayStation Room', 'device_name_ar' => 'غرفة VIP بلايستيشن', 'device_type' => 'ps5', 'hourly_rate' => 75.00, 'status' => 'available', 'specs' => 'غرفة خاصة مكيفة + شاشة 85 بوصة + ساوند سيستم 5.1'],
 
-            ['room_name' => 'VIP Cyber Suite', 'device_name' => 'VIP PlayStation Lounge', 'device_type' => 'ps5', 'hourly_rate' => 90.00, 'status' => 'active', 'specs' => 'Private Soundproof Room + 85" LG G3 OLED + 5.1 Surround + Reclining Couches'],
-            ['room_name' => 'Sim Racing Bay', 'device_name' => 'F1 Motion Simulator Pro', 'device_type' => 'sim', 'hourly_rate' => 120.00, 'status' => 'available', 'specs' => 'Fanatec DD2 Wheelbase, Hydraulic Pedals, Triple Curved 32" 165Hz Monitors, VR Ready'],
+            // Billiards Arena
+            ['room_name' => 'Billiards Arena', 'device_name' => 'Billiard Table 01', 'device_name_ar' => 'طاولة بلياردو 1 (رئيسية)', 'device_type' => 'billiards', 'hourly_rate' => 50.00, 'status' => 'active', 'specs' => 'طاولة بلياردو احترافية 9 قدم + طقم كرات آراميث + إضاءة LED مركزة'],
+            ['room_name' => 'Billiards Arena', 'device_name' => 'Billiard Table 02', 'device_name_ar' => 'طاولة بلياردو 2', 'device_type' => 'billiards', 'hourly_rate' => 50.00, 'status' => 'available', 'specs' => 'طاولة بلياردو احترافية 9 قدم + عصايات كربون'],
+            ['room_name' => 'Billiards Arena', 'device_name' => 'Billiard Table 03', 'device_name_ar' => 'طاولة بلياردو 3', 'device_type' => 'billiards', 'hourly_rate' => 50.00, 'status' => 'available', 'specs' => 'طاولة بلياردو احترافية 9 قدم'],
+
+            // Ping Pong Bay
+            ['room_name' => 'Ping Pong Bay', 'device_name' => 'Ping Pong Table 01', 'device_name_ar' => 'طاولة بينج بونج 1', 'device_type' => 'pingpong', 'hourly_rate' => 35.00, 'status' => 'active', 'specs' => 'طاولة تنس طاولة دولية + مضارب Donic احترافية'],
+            ['room_name' => 'Ping Pong Bay', 'device_name' => 'Ping Pong Table 02', 'device_name_ar' => 'طاولة بينج بونج 2', 'device_type' => 'pingpong', 'hourly_rate' => 35.00, 'status' => 'available', 'specs' => 'طاولة تنس طاولة دولية + شبكة احترافية'],
         ];
 
         $devModels = [];
@@ -172,46 +174,46 @@ class DatabaseSeeder extends Seeder
             'payment_status' => 'unpaid',
         ]);
 
-        // Session 3: PC Master 01 (Started 20 mins ago, 120 mins duration)
-        $s3Start = Carbon::now()->subMinutes(20);
-        $s3End = (clone $s3Start)->addMinutes(120);
+        // Session 3: Billiard Table 01 (Started 25 mins ago, 60 mins duration)
+        $s3Start = Carbon::now()->subMinutes(25);
+        $s3End = (clone $s3Start)->addMinutes(60);
         $session3 = DeviceSession::create([
-            'device_id' => $devModels['PC Master 01']->id,
+            'device_id' => $devModels['Billiard Table 01']->id,
             'shift_id' => $shift->id,
             'staff_id' => $staff->id,
-            'customer_name' => 'Faisal (Valorant)',
-            'customer_phone' => '+966540987654',
+            'customer_name' => 'Mohamed & Tamer (Billiards)',
+            'customer_phone' => '01011223344',
             'start_time' => $s3Start,
             'end_time' => $s3End,
-            'duration_minutes' => 120,
+            'duration_minutes' => 60,
             'status' => 'active',
             'hourly_rate' => 50.00,
-            'session_cost' => 100.00,
-            'beverage_cost' => 54.00,
-            'total_amount' => 154.00,
+            'session_cost' => 50.00,
+            'beverage_cost' => 35.00,
+            'total_amount' => 85.00,
             'paid_amount' => 0.00,
             'payment_status' => 'unpaid',
         ]);
 
-        // Session 4: VIP Lounge (Private booking, 180 mins)
-        $s4Start = Carbon::now()->subMinutes(80);
-        $s4End = (clone $s4Start)->addMinutes(180);
+        // Session 4: Ping Pong Table 01 (Match started 15 mins ago, 45 mins)
+        $s4Start = Carbon::now()->subMinutes(15);
+        $s4End = (clone $s4Start)->addMinutes(45);
         $session4 = DeviceSession::create([
-            'device_id' => $devModels['VIP PlayStation Lounge']->id,
+            'device_id' => $devModels['Ping Pong Table 01']->id,
             'shift_id' => $shift->id,
             'staff_id' => $staff->id,
-            'customer_name' => 'Saud Party',
-            'customer_phone' => '+966533344455',
+            'customer_name' => 'Hazem & Omar (Ping Pong)',
+            'customer_phone' => '01122334455',
             'start_time' => $s4Start,
             'end_time' => $s4End,
-            'duration_minutes' => 180,
+            'duration_minutes' => 45,
             'status' => 'active',
-            'hourly_rate' => 90.00,
-            'session_cost' => 270.00,
-            'beverage_cost' => 110.00,
-            'total_amount' => 380.00,
-            'paid_amount' => 100.00,
-            'payment_status' => 'partially_paid',
+            'hourly_rate' => 35.00,
+            'session_cost' => 26.25,
+            'beverage_cost' => 30.00,
+            'total_amount' => 56.25,
+            'paid_amount' => 0.00,
+            'payment_status' => 'unpaid',
         ]);
 
         // 6. Create Tables
@@ -246,9 +248,9 @@ class DatabaseSeeder extends Seeder
             'payment_status' => 'unpaid',
             'notes' => 'Extra ice for Spanish Latte',
         ]);
-        OrderItem::create(['order_id' => $orderT2->id, 'product_id' => $products['Iced Spanish Latte']->id, 'quantity' => 2, 'unit_price' => 25.00, 'subtotal' => 50.00]);
-        OrderItem::create(['order_id' => $orderT2->id, 'product_id' => $products['Spanish Latte (Hot)']->id, 'quantity' => 1, 'unit_price' => 22.00, 'subtotal' => 22.00]);
-        $tables['T-02']->update(['current_order_id' => $orderT2->id, 'total_spent' => 72.00]);
+        OrderItem::create(['order_id' => $orderT2->id, 'product_id' => $products['Iced Spanish Latte']->id, 'quantity' => 2, 'unit_price' => 40.00, 'subtotal' => 80.00]);
+        OrderItem::create(['order_id' => $orderT2->id, 'product_id' => $products['Hot Spanish Latte']->id, 'quantity' => 1, 'unit_price' => 35.00, 'subtotal' => 35.00]);
+        $tables['T-02']->update(['current_order_id' => $orderT2->id, 'total_spent' => 115.00]);
 
         // Table 3 Order
         $orderT3 = Order::create([
@@ -258,16 +260,16 @@ class DatabaseSeeder extends Seeder
             'status' => 'completed',
             'order_type' => 'dine_in',
             'table_id' => $tables['T-03']->id,
-            'subtotal' => 60.00,
+            'subtotal' => 90.00,
             'discount' => 0.00,
             'tax' => 0.00,
-            'total_amount' => 60.00,
+            'total_amount' => 90.00,
             'payment_status' => 'unpaid',
             'notes' => 'Table by the window',
         ]);
-        OrderItem::create(['order_id' => $orderT3->id, 'product_id' => $products['Cheesy Gaming Nachos']->id, 'quantity' => 1, 'unit_price' => 32.00, 'subtotal' => 32.00]);
-        OrderItem::create(['order_id' => $orderT3->id, 'product_id' => $products['Warm Belgian Waffle']->id, 'quantity' => 1, 'unit_price' => 28.00, 'subtotal' => 28.00]);
-        $tables['T-03']->update(['current_order_id' => $orderT3->id, 'total_spent' => 60.00]);
+        OrderItem::create(['order_id' => $orderT3->id, 'product_id' => $products['Cheesy Gaming Nachos']->id, 'quantity' => 1, 'unit_price' => 45.00, 'subtotal' => 45.00]);
+        OrderItem::create(['order_id' => $orderT3->id, 'product_id' => $products['Nutella Waffle']->id, 'quantity' => 1, 'unit_price' => 45.00, 'subtotal' => 45.00]);
+        $tables['T-03']->update(['current_order_id' => $orderT3->id, 'total_spent' => 90.00]);
 
         // Table 7 Order
         $orderT7 = Order::create([
@@ -277,15 +279,15 @@ class DatabaseSeeder extends Seeder
             'status' => 'completed',
             'order_type' => 'dine_in',
             'table_id' => $tables['T-07']->id,
-            'subtotal' => 108.00,
-            'discount' => 8.00,
+            'subtotal' => 145.00,
+            'discount' => 10.00,
             'tax' => 0.00,
-            'total_amount' => 100.00,
+            'total_amount' => 135.00,
             'payment_status' => 'unpaid',
         ]);
-        OrderItem::create(['order_id' => $orderT7->id, 'product_id' => $products['Red Bull Watermelon Punch']->id, 'quantity' => 3, 'unit_price' => 26.00, 'subtotal' => 78.00]);
-        OrderItem::create(['order_id' => $orderT7->id, 'product_id' => $products['Double Chocolate Cookie']->id, 'quantity' => 2, 'unit_price' => 14.00, 'subtotal' => 28.00]);
-        $tables['T-07']->update(['current_order_id' => $orderT7->id, 'total_spent' => 100.00]);
+        OrderItem::create(['order_id' => $orderT7->id, 'product_id' => $products['Mojito Blueberry Energy']->id, 'quantity' => 3, 'unit_price' => 35.00, 'subtotal' => 105.00]);
+        OrderItem::create(['order_id' => $orderT7->id, 'product_id' => $products['Double Chocolate Cookie']->id, 'quantity' => 2, 'unit_price' => 20.00, 'subtotal' => 40.00]);
+        $tables['T-07']->update(['current_order_id' => $orderT7->id, 'total_spent' => 135.00]);
 
         // Orders linked to gaming sessions
         $orderS1 = Order::create([
@@ -295,12 +297,12 @@ class DatabaseSeeder extends Seeder
             'status' => 'completed',
             'order_type' => 'gaming_room',
             'device_session_id' => $session1->id,
-            'subtotal' => 47.00,
-            'total_amount' => 47.00,
+            'subtotal' => 75.00,
+            'total_amount' => 75.00,
             'payment_status' => 'unpaid',
         ]);
-        OrderItem::create(['order_id' => $orderS1->id, 'product_id' => $products['Iced Spanish Latte']->id, 'quantity' => 1, 'unit_price' => 25.00, 'subtotal' => 25.00]);
-        OrderItem::create(['order_id' => $orderS1->id, 'product_id' => $products['Spanish Latte (Hot)']->id, 'quantity' => 1, 'unit_price' => 22.00, 'subtotal' => 22.00]);
+        OrderItem::create(['order_id' => $orderS1->id, 'product_id' => $products['Iced Spanish Latte']->id, 'quantity' => 1, 'unit_price' => 40.00, 'subtotal' => 40.00]);
+        OrderItem::create(['order_id' => $orderS1->id, 'product_id' => $products['Hot Spanish Latte']->id, 'quantity' => 1, 'unit_price' => 35.00, 'subtotal' => 35.00]);
 
         // Notifications
         Notification::create([
@@ -317,7 +319,7 @@ class DatabaseSeeder extends Seeder
             'type' => 'low_stock',
             'title' => 'Low Stock Alert: Red Bull Energy',
             'message' => 'Only 6 cans remaining in inventory (Reorder level is 10).',
-            'related_to' => (string)$products['Red Bull Energy 250ml']->id,
+            'related_to' => (string)$products['Red Bull Energy Can']->id,
             'is_read' => false,
         ]);
     }

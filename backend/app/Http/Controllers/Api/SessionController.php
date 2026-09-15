@@ -265,6 +265,10 @@ class SessionController extends Controller
         return response()->json([
             'message' => 'Gaming session ended and settled successfully',
             'receipt' => [
+                'business_name' => 'AL5AL Gaming & Billiards Lounge',
+                'business_name_ar' => 'صالة الخال للألعاب والبلياردو والكافيه',
+                'slogan' => 'Enjoy The Game - استمتع بأفضل تجربة لعب وتحدي',
+                'phones' => '01032890430 (Karim) / 01289535503 (Al-Ghareeb) / 0502943796',
                 'session_id' => $session->id,
                 'device_name' => $session->device->device_name,
                 'room_name' => $session->device->room_name,

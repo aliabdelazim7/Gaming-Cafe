@@ -77,28 +77,32 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex items-center justify-between gap-4">
         {/* Brand & Logo */}
         <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary via-purple-600 to-cafe shadow-neon-purple">
-            <Gamepad2 className="w-6 h-6 text-white" />
-            <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-cafe flex items-center justify-center text-[10px] text-white font-bold border-2 border-background">
-              ☕
-            </span>
+          <div className="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950 to-slate-950 border border-purple-500/40 shadow-neon-purple overflow-hidden shrink-0 group">
+            <img
+              src="/al5al-banner.png"
+              alt="AL5AL Lounge"
+              className="w-full h-full object-cover object-top opacity-90 group-hover:scale-110 transition duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-lg md:text-xl font-bold tracking-tight text-white flex items-center gap-1.5 font-sans">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-amber-300">
-                  NEXUS
+              <h1 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-1.5 font-display">
+                <span className="tracking-wider text-white">
+                  AL<span className="text-amber-400 font-extrabold drop-shadow-[0_0_12px_rgba(245,158,11,0.6)]">5</span>AL
                 </span>
-                <span className="text-slate-300 font-normal text-sm md:text-base hidden sm:inline">
-                  {lang === 'ar' ? 'صالات الألعاب والكافيه' : 'Gaming & Cafe'}
+                <span className="text-slate-300 font-semibold text-xs md:text-sm hidden sm:inline px-2 py-0.5 rounded-lg bg-surface/80 border border-border/80">
+                  {lang === 'ar' ? 'صالة الخال' : 'Gaming & Lounge'}
                 </span>
               </h1>
-              <span className="px-1.5 py-0.5 text-[10px] uppercase font-bold tracking-wider rounded bg-primary/20 text-purple-300 border border-primary/40 hidden md:inline">
-                PRO POS
+              <span className="px-2 py-0.5 text-[10px] font-bold tracking-wider rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/40 hidden md:inline animate-pulse">
+                ★ ENJOY THE GAME ★
               </span>
             </div>
-            <p className="text-xs text-slate-400 hidden lg:block">
-              {t.appTagline}
+            <p className="text-[11px] text-slate-400 hidden lg:flex items-center gap-2 mt-0.5">
+              <span>{t.appTagline}</span>
+              <span className="text-slate-600">•</span>
+              <span className="text-purple-300 font-mono text-[10px]">📞 01032890430 / 01289535503</span>
             </p>
           </div>
         </div>

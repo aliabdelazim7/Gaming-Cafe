@@ -75,11 +75,16 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
       <div className="w-full max-w-sm bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface/80">
-          <div className="flex items-center gap-2">
-            <Lock className="w-5 h-5 text-purple-400" />
-            <h3 className="text-base font-bold text-white">
-              {mode === 'pin' ? 'Quick PIN Login' : 'Account Login'}
-            </h3>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-purple-500/40 shrink-0">
+              <img src="/al5al-banner.png" alt="AL5AL" className="w-full h-full object-cover object-top" />
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-white font-display flex items-center gap-1">
+                AL<span className="text-amber-400">5</span>AL <span className="text-xs font-normal text-slate-400 font-sans">• {mode === 'pin' ? 'Quick PIN' : 'Login'}</span>
+              </h3>
+              <p className="text-[10px] text-amber-300 font-semibold">★ Enjoy The Game ★</p>
+            </div>
           </div>
           <button
             onClick={onClose}
