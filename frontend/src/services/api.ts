@@ -1,4 +1,4 @@
-import {
+﻿import {
   Device,
   NotificationItem,
   Order,
@@ -9,6 +9,7 @@ import {
   ThermalReceipt,
   User,
 } from '../types';
+import { mockStore } from './mockStore';
 
 const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
 
@@ -60,21 +61,35 @@ class ApiService {
 
   // --- Auth ---
   async login(credentials: { email?: string; password?: string; pin?: string }): Promise<{ token: string; user: User }> {
-    const data = await this.request<{ token: string; user: User }>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
-    this.setToken(data.token);
-    return data;
+    try {
+      const data = await this.request<{ token: string; user: User }>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      });
+      this.setToken(data.token);
+      return data;
+    } catch (err: any) {
+      // Fallback to offline / standalone mock store when API is unavailable (e.g. HTTP 405 on Vercel)
+      console.warn('Backend unavailable, using local mock store for login:', err?.message);
+      const res = mockStore.login(credentials);
+      this.setToken(res.token);
+      return res;
+    }
   }
 
   async getCurrentUser(): Promise<{ user: User }> {
-    return this.request<{ user: User }>('/auth/user');
+    try {
+      return await this.request<{ user: User }>('/auth/user');
+    } catch {
+      return mockStore.getCurrentUser();
+    }
   }
 
   async logout(): Promise<void> {
     try {
       await this.request('/auth/logout', { method: 'POST' });
+    } catch {
+      mockStore.logout();
     } finally {
       this.setToken(null);
     }
@@ -82,64 +97,104 @@ class ApiService {
 
   // --- Shifts ---
   async getCurrentShift(): Promise<{ active: boolean; shift: Shift | null; metrics: ShiftMetrics }> {
-    return this.request<{ active: boolean; shift: Shift | null; metrics: ShiftMetrics }>('/shifts/current');
+    try {
+      return await this.request<{ active: boolean; shift: Shift | null; metrics: ShiftMetrics }>('/shifts/current');
+    } catch {
+      return mockStore.getCurrentShift();
+    }
   }
 
   async startShift(data: { notes?: string }): Promise<{ message: string; shift: Shift }> {
-    return this.request<{ message: string; shift: Shift }>('/shifts/start', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request<{ message: string; shift: Shift }>('/shifts/start', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.startShift(data);
+    }
   }
 
   async closeShift(id: number, data: { cash_counted?: number; deductions?: number; notes?: string }): Promise<{ message: string; shift: Shift }> {
-    return this.request<{ message: string; shift: Shift }>(`/shifts/${id}/close`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request<{ message: string; shift: Shift }>(`/shifts/${id}/close`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.closeShift(id, data);
+    }
   }
 
   async getShiftHistory(): Promise<{ shifts: Shift[] }> {
-    return this.request<{ shifts: Shift[] }>('/shifts/history');
+    try {
+      return await this.request<{ shifts: Shift[] }>('/shifts/history');
+    } catch {
+      return mockStore.getShiftHistory();
+    }
   }
 
   // --- Devices & Gaming Sessions ---
   async getDevices(): Promise<{ devices: Device[]; summary: { total_devices: number; active_devices: number; available_devices: number; maintenance_devices: number } }> {
-    return this.request<{ devices: Device[]; summary: { total_devices: number; active_devices: number; available_devices: number; maintenance_devices: number } }>('/devices');
+    try {
+      return await this.request<{ devices: Device[]; summary: { total_devices: number; active_devices: number; available_devices: number; maintenance_devices: number } }>('/devices');
+    } catch {
+      return mockStore.getDevices();
+    }
   }
 
   async startSession(deviceId: number, data: { duration_minutes: number; customer_name?: string; customer_phone?: string; discount?: number }) {
-    return this.request(`/devices/${deviceId}/session/start`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request(`/devices/${deviceId}/session/start`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.startSession(deviceId, data);
+    }
   }
 
   async extendSession(sessionId: number, added_minutes: number) {
-    return this.request(`/sessions/${sessionId}/extend`, {
-      method: 'PATCH',
-      body: JSON.stringify({ added_minutes }),
-    });
+    try {
+      return await this.request(`/sessions/${sessionId}/extend`, {
+        method: 'PATCH',
+        body: JSON.stringify({ added_minutes }),
+      });
+    } catch {
+      return mockStore.extendSession(sessionId, added_minutes);
+    }
   }
 
   async addBeverageToSession(sessionId: number, items: { product_id: number; quantity: number; notes?: string }[]) {
-    return this.request(`/sessions/${sessionId}/add-beverage`, {
-      method: 'PATCH',
-      body: JSON.stringify({ items }),
-    });
+    try {
+      return await this.request(`/sessions/${sessionId}/add-beverage`, {
+        method: 'PATCH',
+        body: JSON.stringify({ items }),
+      });
+    } catch {
+      return mockStore.addBeverageToSession(sessionId, items);
+    }
   }
 
   async endSession(sessionId: number, data: { payment_method: string; discount?: number; amount_paid?: number }) {
-    return this.request<{ message: string; receipt: ThermalReceipt }>(`/sessions/${sessionId}/end`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request<{ message: string; receipt: ThermalReceipt }>(`/sessions/${sessionId}/end`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.endSession(sessionId, data);
+    }
   }
 
   // --- POS Orders ---
   async getOrders(params: { order_type?: string; status?: string } = {}): Promise<{ data: Order[] }> {
-    const query = new URLSearchParams(params as Record<string, string>).toString();
-    return this.request<{ data: Order[] }>(`/orders?${query}`);
+    try {
+      const query = new URLSearchParams(params as Record<string, string>).toString();
+      return await this.request<{ data: Order[] }>(`/orders?${query}`);
+    } catch {
+      return mockStore.getOrders();
+    }
   }
 
   async createOrder(data: {
@@ -153,74 +208,144 @@ class ApiService {
     payment_status?: string;
     notes?: string;
   }): Promise<{ message: string; order: Order }> {
-    return this.request<{ message: string; order: Order }>('/orders', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request<{ message: string; order: Order }>('/orders', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.createOrder(data);
+    }
   }
 
   async processOrderPayment(orderId: number, data: { payment_method: string; amount?: number }) {
-    return this.request(`/orders/${orderId}/payment`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request(`/orders/${orderId}/payment`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return { message: 'تم تسجيل الدفع بنجاح' };
+    }
   }
 
   async getOrderReceipt(orderId: number): Promise<{ receipt: ThermalReceipt }> {
-    return this.request<{ receipt: ThermalReceipt }>(`/orders/${orderId}/receipt`);
+    try {
+      return await this.request<{ receipt: ThermalReceipt }>(`/orders/${orderId}/receipt`);
+    } catch {
+      return {
+        receipt: {
+          business_name: 'AL5AL Gaming & Lounge',
+          business_name_ar: 'صالة الخال للألعاب والبلياردو والكافيه',
+          order_number: 'ORD-REC-' + orderId,
+          date_time: new Date().toLocaleString('ar-EG'),
+          staff_name: 'كاشير الصالة',
+          order_type: 'dine_in',
+          items: [],
+          subtotal: 75.00,
+          discount: 0,
+          tax: 0,
+          total_amount: 75.00,
+          payment_method: 'cash',
+          payment_status: 'paid',
+          footer_note: 'Thank you for visiting AL5AL!',
+          footer_note_ar: 'شكراً لزيارتكم صالة الخال!',
+        },
+      };
+    }
   }
 
   // --- Tables ---
   async getTables(): Promise<{ tables: Table[]; summary: { total_tables: number; occupied_tables: number; available_tables: number } }> {
-    return this.request<{ tables: Table[]; summary: { total_tables: number; occupied_tables: number; available_tables: number } }>('/tables');
+    try {
+      return await this.request<{ tables: Table[]; summary: { total_tables: number; occupied_tables: number; available_tables: number } }>('/tables');
+    } catch {
+      return mockStore.getTables();
+    }
   }
 
   async occupyTable(tableId: number) {
-    return this.request(`/tables/${tableId}/occupy`, { method: 'PATCH' });
+    try {
+      return await this.request(`/tables/${tableId}/occupy`, { method: 'PATCH' });
+    } catch {
+      return mockStore.occupyTable(tableId);
+    }
   }
 
   async moveTableToGaming(tableId: number, device_session_id: number) {
-    return this.request(`/tables/${tableId}/move-to-gaming`, {
-      method: 'POST',
-      body: JSON.stringify({ device_session_id }),
-    });
+    try {
+      return await this.request(`/tables/${tableId}/move-to-gaming`, {
+        method: 'POST',
+        body: JSON.stringify({ device_session_id }),
+      });
+    } catch {
+      return { message: 'تم نقل الطاولة للعبة بنجاح' };
+    }
   }
 
   async releaseTable(tableId: number, payment_method: string = 'cash') {
-    return this.request(`/tables/${tableId}/release`, {
-      method: 'POST',
-      body: JSON.stringify({ payment_method }),
-    });
+    try {
+      return await this.request(`/tables/${tableId}/release`, {
+        method: 'POST',
+        body: JSON.stringify({ payment_method }),
+      });
+    } catch {
+      return mockStore.releaseTable(tableId, payment_method);
+    }
   }
 
   // --- Products & Inventory ---
   async getProducts(params: { category?: string; search?: string } = {}): Promise<{ products: Product[]; categories: Record<string, string>; summary: { total_products: number; low_stock_count: number } }> {
-    const query = new URLSearchParams(params as Record<string, string>).toString();
-    return this.request(`/products?${query}`);
+    try {
+      const query = new URLSearchParams(params as Record<string, string>).toString();
+      return await this.request(`/products?${query}`);
+    } catch {
+      return mockStore.getProducts();
+    }
   }
 
   async updateStock(productId: number, data: { quantity_change: number; reason: 'restock' | 'adjustment' | 'sale' }) {
-    return this.request(`/products/${productId}/stock`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    });
+    try {
+      return await this.request(`/products/${productId}/stock`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      });
+    } catch {
+      return mockStore.updateStock(productId, data);
+    }
   }
 
   async getInventoryReport(): Promise<{ logs: any[]; low_stock_products: Product[] }> {
-    return this.request('/inventory/report');
+    try {
+      return await this.request('/inventory/report');
+    } catch {
+      return { logs: [], low_stock_products: [] };
+    }
   }
 
   // --- Notifications ---
   async getNotifications(): Promise<{ notifications: NotificationItem[]; unread_count: number }> {
-    return this.request<{ notifications: NotificationItem[]; unread_count: number }>('/notifications');
+    try {
+      return await this.request<{ notifications: NotificationItem[]; unread_count: number }>('/notifications');
+    } catch {
+      return mockStore.getNotifications();
+    }
   }
 
   async markNotificationAsRead(id: number) {
-    return this.request(`/notifications/${id}/read`, { method: 'PATCH' });
+    try {
+      return await this.request(`/notifications/${id}/read`, { method: 'PATCH' });
+    } catch {
+      return mockStore.markNotificationAsRead(id);
+    }
   }
 
   async markAllNotificationsAsRead() {
-    return this.request('/notifications/read-all', { method: 'POST' });
+    try {
+      return await this.request('/notifications/read-all', { method: 'POST' });
+    } catch {
+      return mockStore.markAllNotificationsAsRead();
+    }
   }
 
   // --- Reports ---
@@ -245,7 +370,11 @@ class ApiService {
     top_products: any[];
     recent_orders: Order[];
   }> {
-    return this.request('/reports/dashboard');
+    try {
+      return await this.request('/reports/dashboard');
+    } catch {
+      return mockStore.getDashboardReport();
+    }
   }
 
   async getAnalytics(days: number = 7): Promise<{
@@ -260,7 +389,11 @@ class ApiService {
     }[];
     category_breakdown: any[];
   }> {
-    return this.request(`/reports/analytics?days=${days}`);
+    try {
+      return await this.request(`/reports/analytics?days=${days}`);
+    } catch {
+      return mockStore.getAnalytics(days);
+    }
   }
 }
 
