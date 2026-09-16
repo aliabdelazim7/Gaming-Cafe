@@ -358,7 +358,7 @@ class MockStore {
     }
     const staffUser = INITIAL_USERS[2];
     return {
-      currentUser: staffUser,
+      currentUser: null,
       currentShift: {
         id: 1,
         staff_id: 3,
@@ -393,29 +393,13 @@ class MockStore {
     let found: User | undefined;
     if (credentials.pin) {
       found = INITIAL_USERS.find((u) => u.pin_code === credentials.pin);
-    } else if (credentials.email) {
-      found = INITIAL_USERS.find((u) => u.email.toLowerCase() === credentials.email?.toLowerCase());
+    } else if (credentials.email && credentials.password) {
+      // Standalone mode has no password database; never authenticate by email alone.
+      found = undefined;
     }
 
     if (!found) {
-      if (credentials.pin && ['0000', '1234', '5678'].includes(credentials.pin)) {
-        found = INITIAL_USERS.find((u) => u.pin_code === credentials.pin);
-      } else if (credentials.pin && credentials.pin.length >= 4) {
-        // Graceful acceptance of any 4-digit PIN for demo / standalone on Vercel
-        found = {
-          id: 3,
-          name: 'كاشير الصالة (Cashier)',
-          email: 'staff@al5al.com',
-          pin_code: credentials.pin,
-          role: 'staff',
-          shift_id: 1,
-          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        };
-      }
-    }
-
-    if (!found) {
-      throw new Error('رمز الدخول (PIN) غير صحيح - استخدم 0000 أو 5678 أو 1234');
+      throw new Error('بيانات الدخول غير صحيحة. استخدم حسابًا مسجلًا أو اطلب PIN صحيحًا من المدير.');
     }
 
     this.data.currentUser = found;
@@ -424,10 +408,7 @@ class MockStore {
   }
 
   getCurrentUser(): { user: User } {
-    if (!this.data.currentUser) {
-      this.data.currentUser = INITIAL_USERS[2];
-      this.save();
-    }
+    if (!this.data.currentUser) throw new Error('لا توجد جلسة دخول نشطة');
     return { user: this.data.currentUser };
   }
 

@@ -76,27 +76,17 @@ class ApiService {
       this.setToken(res.token);
       return res;
     }
-    try {
-      const data = await this.request<{ token: string; user: User }>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(credentials),
-      });
-      this.setToken(data.token);
-      return data;
-    } catch (err: any) {
-      const res = mockStore.login(credentials);
-      this.setToken(res.token);
-      return res;
-    }
+    const data = await this.request<{ token: string; user: User }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+    this.setToken(data.token);
+    return data;
   }
 
   async getCurrentUser(): Promise<{ user: User }> {
     if (isStandalone) return mockStore.getCurrentUser();
-    try {
-      return await this.request<{ user: User }>('/auth/user');
-    } catch {
-      return mockStore.getCurrentUser();
-    }
+    return await this.request<{ user: User }>('/auth/user');
   }
 
   async logout(): Promise<void> {
