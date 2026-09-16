@@ -18,7 +18,15 @@ const isLocalhost = typeof window !== 'undefined' && (
   window.location.hostname.startsWith('192.168.') ||
   window.location.hostname.startsWith('10.')
 );
-const hasRemoteBackend = Boolean(API_URL && !API_URL.startsWith('/'));
+const isSameOriginApi = typeof window !== 'undefined' && Boolean(API_URL) && (() => {
+  try {
+    return new URL(API_URL, window.location.origin).hostname === window.location.hostname;
+  } catch {
+    return false;
+  }
+})();
+// A Vercel static deployment is not the Laravel API. Never POST to its /api rewrite.
+const hasRemoteBackend = Boolean(API_URL && !API_URL.startsWith('/') && !isSameOriginApi);
 // Standalone mode is active when deployed on Vercel without an external Laravel backend URL
 const isStandalone = !hasRemoteBackend && !isLocalhost;
 const BASE_URL = hasRemoteBackend ? API_URL : (isLocalhost ? 'http://127.0.0.1:8000/api' : '/api');
